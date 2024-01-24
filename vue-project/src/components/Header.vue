@@ -1,7 +1,7 @@
 <template>
   <header class="header-container">
     <div class="header-content">
-      <h1 class="header-title">Editor Krizoviek AT</h1>
+      <h1 class="header-title">Editor Krížoviek AT</h1>
     </div>
   </header>
 </template>
@@ -34,9 +34,13 @@ export default {
 }
 
 .header-title {
-  font-size: 3em;
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: black;
+  background-color: orange;
+  color: chartreuse;
+  font-size: 5em;
   margin: 0;
-  outline: 3px solid black;
+  outline: 6px solid black;
   padding: 10px;
 }
 </style>
