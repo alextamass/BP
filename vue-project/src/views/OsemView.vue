@@ -4,8 +4,14 @@
       <h1 class="h1">Vytvorenie Osemsmerovky</h1>
       <br>
       <div class="input">
-        <input type="text" class="text-field" placeholder="Zadaj slovo, ktoré chceš pridať" />
-        <button class="action-button">Pridať</button>
+        <input type="text" v-model="enteredWord" class="text-field" placeholder="Zadaj slovo, ktoré chceš pridať" />
+        <button @click="addWord" class="action-button">Pridať</button>
+        <div class="entered-words">
+          <p v-for="(word, index) in enteredWords" :key="index">
+            {{ word }}
+            <button @click="vymaz(index)">Vymazať</button>
+          </p>
+        </div>
       </div>
     </div>
     <div class="divider"></div>
@@ -17,10 +23,38 @@
 <script>
 export default {
   name: "OsemView",
+  data() {
+    return {
+      enteredWord: "",
+      enteredWords: [],
+    };
+  },
+  methods: {
+    addWord() {
+      if (this.enteredWord.trim() !== "") {
+        this.enteredWords.push(this.enteredWord.trim());
+        this.enteredWord = "";
+      }
+    },
+    vymaz(index){
+      this.enteredWords.splice(index, 1)
+    },
+  },
 };
 </script>
 
+
 <style scoped>
+.entered-words {
+  margin-top: 20px;
+}
+
+.entered-words p {
+  margin: 5px 0;
+  color: #007BFF;
+  font-weight: bold;
+}
+
 .container {
   display: flex;
   height: 100vh;
