@@ -21,7 +21,6 @@ export default {
   text-align: center;
   padding: 20px;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-
   display: flex;
   align-items: center;
   justify-content: center;
