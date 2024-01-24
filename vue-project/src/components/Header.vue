@@ -25,7 +25,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 60vh;
+  height: 40vh;
   margin: 0;
 }
 
