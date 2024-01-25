@@ -16,6 +16,7 @@
     </div>
     <div class="divider"></div>
     <div class="half right">
+      <h1 class="right-heading">Vygenerovaná osemsmerovka : </h1> <br>
       <div class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
         <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
           <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell">
@@ -41,7 +42,7 @@ export default {
       enteredWord: "",
       enteredWords: [],
       columns: 15,
-      grid: Array.from({ length: 10}, () => Array.from({ length: 10}, () => ({ value: "", placeholder: "" }))),
+      grid: Array.from({ length: 8}, () => Array.from({ length: 8}, () => ({ value: "", placeholder: "" }))),
     };
   },
   methods: {
@@ -163,6 +164,11 @@ export default {
   font-size: 14px;
   font-weight: bold;
   outline: none;
+}
+
+.right-heading{
+  color: black;
+  text-align: center;
 }
 </style>
 
