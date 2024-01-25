@@ -14,7 +14,7 @@
         </div>
       </div>
       <div>
-        <button @click="show()" class="button-generate">Generovat</button>
+        <button @click="toggleGrid" class="button-generate">Generovat</button>
       </div>
     </div>
     <div class="divider"></div>
@@ -44,9 +44,9 @@ export default {
     return {
       enteredWord: "",
       enteredWords: [],
-      columns: 15,
+      columns: 8,
       showGrid: false,
-      grid: Array.from({ length: 8}, () => Array.from({ length: 8}, () => ({ value: "", placeholder: "" }))),
+      grid: [],
     };
   },
   methods: {
@@ -59,8 +59,24 @@ export default {
     vymaz(index) {
       this.enteredWords.splice(index, 1);
     },
-    show(){
-      this.showGrid = !(this.showGrid);
+    toggleGrid() {
+      this.showGrid = !this.showGrid;
+      if (this.showGrid) {
+        this.findLongestWord();
+      }
+    },
+    findLongestWord() {
+      var max = 0;
+      for (var word of this.enteredWords) {
+        if (word.length >= max) {
+          max = word.length;
+        }
+      }
+      this.columns = max + 1;
+      this.initializeGrid();
+    },
+    initializeGrid() {
+      this.grid = Array.from({ length: this.columns }, () => Array.from({ length: this.columns }, () => ({ value: "", placeholder: "" })));
     },
     updateCell(rowIndex, colIndex) {
       console.log(`Updated cell at row ${rowIndex}, column ${colIndex} with value: ${this.grid[rowIndex][colIndex].value}`);
