@@ -135,8 +135,11 @@ export default {
             Array.from({ length: this.columns }, () => ({ value: "", placeholder: "" }))
         );
       }
+      this.fillEmpty()
     },
-
+    fillEmpty(){
+      //vytvorit json so slovenskymi pismenami a naplnit prazdne miesta
+    },
     updateCell(rowIndex, colIndex) {
       console.log(`Updated cell at row ${rowIndex}, column ${colIndex} with value: ${this.grid[rowIndex][colIndex].value}`);
     },
