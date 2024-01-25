@@ -76,7 +76,31 @@ export default {
       this.initializeGrid();
     },
     initializeGrid() {
-      this.grid = Array.from({ length: this.columns }, () => Array.from({ length: this.columns }, () => ({ value: "", placeholder: "" })));
+      if (this.showGrid) {
+        this.grid = Array.from({ length: this.columns }, () =>
+            Array.from({ length: this.columns }, () => ({ value: "", placeholder: "" }))
+        );
+
+        for (let i = 0; i < this.enteredWords.length; i++) {
+          const word = this.enteredWords[i];
+          const startRow = i % this.columns;
+          const startCol = Math.floor(i / this.columns);
+
+          for (let j = 0; j < word.length; j++) {
+            const char = word[j];
+            const row = (startRow + j) % this.columns;
+            const col = startCol;
+
+            if (row < this.columns && col < this.columns) {
+              this.grid[row][col].placeholder = char;
+            }
+          }
+        }
+      } else {
+        this.grid = Array.from({ length: this.columns }, () =>
+            Array.from({ length: this.columns }, () => ({ value: "", placeholder: "" }))
+        );
+      }
     },
     updateCell(rowIndex, colIndex) {
       console.log(`Updated cell at row ${rowIndex}, column ${colIndex} with value: ${this.grid[rowIndex][colIndex].value}`);
