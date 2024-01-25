@@ -4,7 +4,7 @@
       <h1 class="h1">Vytvorenie Osemsmerovky</h1>
       <br>
       <div class="input">
-        <input type="text" v-model="enteredWord" class="text-field" placeholder="Zadaj slovo, ktoré chceš pridať" />
+        <input @keyup.enter="addWord" type="text" v-model="enteredWord" class="text-field" placeholder="Zadaj slovo, ktoré chceš pridať" />
         <button @click="addWord" class="action-button">Pridať</button>
         <div class="entered-words">
           <p v-for="(word, index) in enteredWords" :key="index">
@@ -16,6 +16,19 @@
     </div>
     <div class="divider"></div>
     <div class="half right">
+      <div class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
+        <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
+          <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell">
+            <input
+                v-model="cell.value"
+                :placeholder="cell.placeholder"
+                class="crossword-input"
+                @input="updateCell(rowIndex, colIndex)"
+                readonly
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -27,6 +40,8 @@ export default {
     return {
       enteredWord: "",
       enteredWords: [],
+      columns: 15,
+      grid: Array.from({ length: 10}, () => Array.from({ length: 10}, () => ({ value: "", placeholder: "" }))),
     };
   },
   methods: {
@@ -36,12 +51,16 @@ export default {
         this.enteredWord = "";
       }
     },
-    vymaz(index){
-      this.enteredWords.splice(index, 1)
+    vymaz(index) {
+      this.enteredWords.splice(index, 1);
+    },
+    updateCell(rowIndex, colIndex) {
+      console.log(`Updated cell at row ${rowIndex}, column ${colIndex} with value: ${this.grid[rowIndex][colIndex].value}`);
     },
   },
 };
 </script>
+
 
 
 <style scoped>
@@ -111,4 +130,39 @@ export default {
   height: 100%;
   margin: 0 10px;
 }
+
+.crossword-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  background-color: #eee;
+  border: 2px solid black;
+  border-radius: 5px;
+}
+
+.crossword-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.crossword-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: 1px solid black;
+  height: 40px;
+  width: 40px;
+}
+
+.crossword-input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  outline: none;
+}
 </style>
+
