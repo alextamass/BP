@@ -60,20 +60,41 @@ export default {
       this.enteredWords.splice(index, 1);
     },
     toggleGrid() {
-      this.showGrid = !this.showGrid;
+      if(!this.showGrid){
+        this.showGrid = true;
+      }
       if (this.showGrid) {
         this.findLongestWord();
       }
     },
     findLongestWord() {
-      var max = 0;
+      var characters = 0;
+      var longest = 0
       for (var word of this.enteredWords) {
-        if (word.length >= max) {
-          max = word.length;
+        for(var chars of word){
+          characters++;
+        }
+        if(word.length >= longest){
+          longest = word.length;
         }
       }
-      this.columns = max + 1;
-      this.initializeGrid();
+      this.columns = longest + 3;
+      this.checkColumns()
+    },
+    checkColumns(){
+      var sumOfChars = 0;
+      for (var word of this.enteredWords) {
+        for(var char in word){
+          sumOfChars++;
+        }
+      }
+      if(this.columns * this.columns < sumOfChars){
+        this.columns++;
+        this.checkColumns();
+      }
+      else{
+        this.initializeGrid()
+      }
     },
     initializeGrid() {
       if (this.showGrid) {
@@ -83,16 +104,29 @@ export default {
 
         for (let i = 0; i < this.enteredWords.length; i++) {
           const word = this.enteredWords[i];
-          const startRow = i % this.columns;
-          const startCol = Math.floor(i / this.columns);
 
-          for (let j = 0; j < word.length; j++) {
-            const char = word[j];
-            const row = (startRow + j) % this.columns;
-            const col = startCol;
+          if (word.length <= this.columns) {
+            const startRow = Math.floor(Math.random() * this.columns);
+            const startCol = Math.floor(Math.random() * this.columns);
+            const placeHorizontally = Math.random() < 0.5;
+            const placeRightToLeft = Math.random() < 0.5;
 
-            if (row < this.columns && col < this.columns) {
-              this.grid[row][col].placeholder = char;
+            for (let j = 0; j < word.length; j++) {
+              const char = word[j];
+              let row, col;
+              if (placeHorizontally) {
+                row = startRow;
+                col = startCol + j;
+              } else {
+                row = startRow + j;
+                col = startCol;
+              }
+              if (row < this.columns && col < this.columns && this.grid[row][col].placeholder === "") {
+                this.grid[row][col].placeholder = char;
+              } else {
+                this.initializeGrid();
+                return;
+              }
             }
           }
         }
@@ -102,6 +136,7 @@ export default {
         );
       }
     },
+
     updateCell(rowIndex, colIndex) {
       console.log(`Updated cell at row ${rowIndex}, column ${colIndex} with value: ${this.grid[rowIndex][colIndex].value}`);
     },
