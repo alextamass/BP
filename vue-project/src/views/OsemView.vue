@@ -13,11 +13,14 @@
           </p>
         </div>
       </div>
+      <div>
+        <button @click="show()" class="button-generate">Generovat</button>
+      </div>
     </div>
     <div class="divider"></div>
-    <div class="half right">
+    <div  class="half right">
       <h1 class="right-heading">Vygenerovaná osemsmerovka : </h1> <br>
-      <div class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
+      <div v-if="showGrid" class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
         <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
           <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell">
             <input
@@ -42,6 +45,7 @@ export default {
       enteredWord: "",
       enteredWords: [],
       columns: 15,
+      showGrid: false,
       grid: Array.from({ length: 8}, () => Array.from({ length: 8}, () => ({ value: "", placeholder: "" }))),
     };
   },
@@ -54,6 +58,9 @@ export default {
     },
     vymaz(index) {
       this.enteredWords.splice(index, 1);
+    },
+    show(){
+      this.showGrid = !(this.showGrid);
     },
     updateCell(rowIndex, colIndex) {
       console.log(`Updated cell at row ${rowIndex}, column ${colIndex} with value: ${this.grid[rowIndex][colIndex].value}`);
@@ -96,7 +103,9 @@ export default {
 }
 
 .left {
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .right {
@@ -119,6 +128,16 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+}
+
+.button-generate {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 25px;
 }
 
 .action-button:hover {
