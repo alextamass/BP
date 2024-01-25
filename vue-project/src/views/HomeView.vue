@@ -21,9 +21,11 @@ export default {
 
 <style scoped>
 .home-heading {
-  color: orangered;
+  color: red;
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: white;
   font-family: Georgia;
-  font-size: 2.5em;
+  font-size: 3.5em;
   margin-bottom: 10px;
   text-align: center;
 }
