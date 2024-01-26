@@ -44,9 +44,9 @@
           </div>
         </div>
       </div>
-      <section>
+      <section v-if="showGrid">
         <h1 class="hladaneSlova">Hľadané slová</h1>
-        <div v-if="showGrid" v-for="(word, index) in enteredWords" :key="index" class="words">
+        <div  v-for="(word, index) in enteredWords" :key="index" class="words">
         {{index + 1}} :  {{word}}
         </div>
       </section>
