@@ -2,7 +2,9 @@
   <div class="games-container">
     <div v-for="(image, index) in images" :key="index" class="game-item">
       <div class="image-container">
-        <img :src="image.url" :alt="image.name" class="game-image" />
+        <router-link :to="{ name: image.path }">
+          <img :src="image.url" :alt="image.name" class="game-image" />
+        </router-link>
       </div>
       <router-link :to="{ name: image.path }" class="router-link-button">
         {{ image.name }}
@@ -45,6 +47,19 @@ export default {
   overflow: hidden;
   border: 1px solid #ddd;
   border-radius: 8px;
+  position: relative;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.image-container:hover img {
+  transform: scale(1.2);
+  cursor: pointer;
+  z-index: 1;
 }
 
 .game-image {
