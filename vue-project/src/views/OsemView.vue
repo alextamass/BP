@@ -4,8 +4,16 @@
       <h1 class="h1">Vytvorenie Osemsmerovky</h1>
       <br>
       <div class="input">
-        <input @keyup.enter="addWord" type="text" v-model="enteredWord" class="text-field" placeholder="Zadaj slovo, ktoré chceš pridať" />
-        <button @click="addWord" class="action-button">Pridať</button>
+        <input
+            @keyup.enter="addWord"
+            :disabled="this.disableButtons"
+            type="text" v-model="enteredWord"
+            class="text-field"
+            placeholder="Zadaj slovo, ktoré chceš pridať" />
+        <button
+            v-if="!disableButtons"
+            @click="addWord"
+            class="action-button">Pridať</button>
         <div class="entered-words">
           <p v-for="(word, index) in enteredWords" :key="index">
             {{ word }}
@@ -13,6 +21,9 @@
           </p>
         </div>
       </div>
+      <h2 v-if="disableButtons" class="error-message">
+        Zadaný maximálny počet slov (10)
+      </h2>
       <div>
         <button @click="toggleGrid" class="button-generate">Generovat</button>
       </div>
@@ -43,6 +54,7 @@ export default {
   data() {
     return {
       enteredWord: "",
+      disableButtons: false,
       enteredWords: [],
       columns: 8,
       showGrid: false,
@@ -51,13 +63,24 @@ export default {
   },
   methods: {
     addWord() {
-      if (this.enteredWord.trim() !== "") {
-        this.enteredWords.push(this.enteredWord.trim());
-        this.enteredWord = "";
+      if(this.enteredWords.length < 10) {
+        if (this.enteredWord.trim() !== "") {
+          this.enteredWords.push(this.enteredWord.trim());
+          this.enteredWord = "";
+        }
+      }
+      else{
+        this.disableButtons = true;
+        alert("Zadaný maximálny počet slov");
       }
     },
     vymaz(index) {
       this.enteredWords.splice(index, 1);
+      if(this.disableButtons){
+        if(this.enteredWords.length < 10){
+          this.disableButtons = false;
+        }
+      }
     },
     toggleGrid() {
       if(!this.showGrid){
@@ -78,7 +101,7 @@ export default {
           longest = word.length;
         }
       }
-      this.columns = longest + 3;
+      this.columns = longest + 7;
       this.checkColumns()
     },
     checkColumns(){
@@ -266,6 +289,17 @@ export default {
 .right-heading{
   color: black;
   text-align: center;
+}
+
+.error-message {
+  background: red;
+  padding: 10px;
+  color: white;
+  border-radius: 10px;
+  position: relative;
+  display: inline-block;
+  box-shadow: 1px 1px 1px 1px #aaaaaa;
+  margin-top: 10px;
 }
 </style>
 
