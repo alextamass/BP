@@ -55,10 +55,12 @@
 </template>
 
 <script>
+import abeceda from '../abeceda.json'
 export default {
   name: "OsemView",
   data() {
     return {
+      characters: abeceda,
       enteredWord: "",
       disableButtons: false,
       enteredWords: [],
@@ -195,7 +197,14 @@ export default {
       this.fillEmpty()
     },
     fillEmpty(){
-      //vytvorit json so slovenskymi pismenami a naplnit prazdne miesta
+      for(let i = 0; i < this.columns; i++){
+        for(let j = 0; j < this.columns; j++){
+          if(this.grid[i][j].placeholder === ""){
+            const random = Math.floor(Math.random() * this.characters.numCharacters);
+            this.grid[i][j].placeholder = this.characters.characters[random];
+          }
+        }
+      }
     },
     updateCell(rowIndex, colIndex) {
       console.log(`Updated cell at row ${rowIndex}, column ${colIndex} with value: ${this.grid[rowIndex][colIndex].value}`);
