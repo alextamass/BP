@@ -30,7 +30,7 @@
     </div>
     <div class="divider"></div>
     <div  class="half right">
-      <h1 class="right-heading">Vygenerovaná osemsmerovka : </h1> <br>
+      <h1 v-if="showGrid" class="right-heading">Vygenerovaná osemsmerovka : </h1> <br>
       <div v-if="showGrid" class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
         <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
           <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell">
@@ -44,6 +44,12 @@
           </div>
         </div>
       </div>
+      <section>
+        <h1 class="hladaneSlova">Hľadané slová</h1>
+        <div v-if="showGrid" v-for="(word, index) in enteredWords" :key="index" class="words">
+        {{index + 1}} :  {{word}}
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -133,22 +139,50 @@ export default {
             const startCol = Math.floor(Math.random() * this.columns);
             const placeHorizontally = Math.random() < 0.5;
             const placeRightToLeft = Math.random() < 0.5;
-
-            for (let j = 0; j < word.length; j++) {
-              const char = word[j];
-              let row, col;
-              if (placeHorizontally) {
-                row = startRow;
-                col = startCol + j;
-              } else {
-                row = startRow + j;
-                col = startCol;
+            if(placeRightToLeft) {
+              for (let j = 0; j < word.length; j++) {
+                const char = word[j];
+                let row, col;
+                if (placeHorizontally) {
+                  row = startRow;
+                  col = startCol + j;
+                } else {
+                  row = startRow + j;
+                  col = startCol;
+                }
+                if ((row < this.columns && col < this.columns && this.grid[row][col].placeholder === "") ||
+                    (row < this.columns && col < this.columns && this.grid[row][col].placeholder === char)) {
+                  this.grid[row][col].placeholder = char;
+                } else {
+                  this.initializeGrid();
+                  return;
+                }
               }
-              if (row < this.columns && col < this.columns && this.grid[row][col].placeholder === "") {
-                this.grid[row][col].placeholder = char;
-              } else {
-                this.initializeGrid();
-                return;
+            }
+            else{
+              for (let j = 0; j < word.length; j++) {
+                const char = word[j];
+                let row, col;
+                if (placeHorizontally) {
+                  row = startRow;
+                  col = startCol - j;
+                } else {
+                  row = startRow - j;
+                  col = startCol;
+                }
+                if (
+                    row >= 0 &&
+                    row < this.columns &&
+                    col >= 0 &&
+                    col < this.columns &&
+                    (this.grid[row][col].placeholder === "" ||
+                        this.grid[row][col].placeholder === char)
+                ) {
+                  this.grid[row][col].placeholder = char;
+                } else {
+                  this.initializeGrid();
+                  return;
+                }
               }
             }
           }
@@ -193,6 +227,13 @@ export default {
   color: orangered;
 }
 
+.hladaneSlova {
+  text-align: center;
+  color: black;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
 .half {
   flex: 1;
   box-sizing: border-box;
@@ -211,6 +252,8 @@ export default {
 
 .right {
   background-color: #ffffff;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .text-field {
@@ -239,6 +282,11 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   margin-top: 25px;
+  transition: background-color 0.3s ease;
+}
+
+.button-generate:hover {
+  background-color: #0056b3;
 }
 
 .action-button:hover {
@@ -289,6 +337,22 @@ export default {
 .right-heading{
   color: black;
   text-align: center;
+}
+
+.words {
+  color: #333;
+  font-size: 16px;
+  text-align: center;
+  font-family: Georgia;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 10px 0;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .error-message {
