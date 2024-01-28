@@ -22,25 +22,30 @@
         </div>
       </div>
       <h2 v-if="disableButtons" class="error-message">
-        Zadaný maximálny počet slov (10)
+        Zadaný maximálny počet slov (8)
       </h2>
       <div>
         <button @click="toggleGrid" class="button-generate">Generovat</button>
       </div>
     </div>
     <div class="divider"></div>
-    <div  class="half right">
-      <h1 v-if="showGrid" class="right-heading">Vygenerovaná osemsmerovka : </h1> <br>
-      <div v-if="showGrid" class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
-        <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
-          <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell">
-            <input
-                v-model="cell.value"
-                :placeholder="cell.placeholder"
-                class="crossword-input"
-                @input="updateCell(rowIndex, colIndex)"
-                readonly
-            />
+    <div class="half right" v-if="showGrid">
+      <button style="float: right" class="action-button" v-if="showGrid" @click="exportToPDF">Uložiť</button>
+      <br>
+      <div id="generovanaOsemsmerovka">
+        <h1 v-if="showGrid" class="right-heading">Vygenerovaná osemsmerovka : </h1>
+        <div class="crossword-container">
+          <div v-if="showGrid" class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
+          <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
+            <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell">
+              <input
+                  v-model="cell.value"
+                  :placeholder="cell.placeholder"
+                  class="crossword-input"
+                  @input="updateCell(rowIndex, colIndex)"
+                  readonly
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -50,12 +55,16 @@
         {{index + 1}} :  {{word}}
         </div>
       </section>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import abeceda from '../abeceda.json'
+import jsPDF from "jspdf";
+import html2canvas from 'html2canvas';
+
 export default {
   name: "OsemView",
   data() {
@@ -71,7 +80,7 @@ export default {
   },
   methods: {
     addWord() {
-      if(this.enteredWords.length < 10) {
+      if(this.enteredWords.length < 8) {
         if (this.enteredWord.trim() !== "") {
           this.enteredWords.push(this.enteredWord.trim());
           this.enteredWord = "";
@@ -85,7 +94,7 @@ export default {
     vymaz(index) {
       this.enteredWords.splice(index, 1);
       if(this.disableButtons){
-        if(this.enteredWords.length < 10){
+        if(this.enteredWords.length < 8){
           this.disableButtons = false;
         }
       }
@@ -206,6 +215,26 @@ export default {
         }
       }
     },
+    exportToPDF() {
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "pt",
+        format: [792, 800]
+      });
+
+      const content = document.getElementById("generovanaOsemsmerovka");
+
+      html2canvas(content, {
+        scale: 1
+      }).then(canvas => {
+        const imgData = canvas.toDataURL("image/jpeg", 1.0);
+        const imgWidth = 792;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
+        pdf.save("Osemsmerovka.pdf");
+      });
+    },
     updateCell(rowIndex, colIndex) {
       console.log(`Updated cell at row ${rowIndex}, column ${colIndex} with value: ${this.grid[rowIndex][colIndex].value}`);
     },
@@ -309,10 +338,17 @@ export default {
   margin: 0 10px;
 }
 
+.crossword-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .crossword-grid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   gap: 2px;
+  width: fit-content;
   background-color: #eee;
   border: 2px solid black;
   border-radius: 5px;
@@ -346,23 +382,24 @@ export default {
 .right-heading{
   color: black;
   text-align: center;
+  margin-left: 60px;
+  margin-bottom: 20px;
 }
 
 .words {
+  margin-left: 20px;
   color: #333;
-  font-size: 16px;
-  text-align: center;
+  font-size: 18px;
+  text-align: left;
+  display: inline-block;
   font-family: Georgia;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin: 10px 0;
   padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 
 .error-message {
   background: red;
