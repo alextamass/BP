@@ -1,7 +1,5 @@
 <template>
-  <div class="heading-section">
-    <h2>Vytvorenie Krizovky</h2>
-  </div>
+  <h1>Vytvorenie Krizovky</h1>
   <div class="krizovka-container">
     <div class="input-section">
       <label for="titleInput">Title:</label>
@@ -37,8 +35,5 @@ export default {
   width: 40%;
 }
 
-.heading-section {
-  text-align: center;
-}
 
 </style>

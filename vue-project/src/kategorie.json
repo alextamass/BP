@@ -1,0 +1,17 @@
+{
+  "kategorie": ["Zvieratá", "Značky áut", "Jedlá"],
+  "Zvieratá": [
+    {
+      "slovo": "Pes",
+      "obrazok": "https://cdn.pixabay.com/photo/2022/09/11/17/37/dog-7447600_1280.png"
+    },
+    {
+      "slovo": "Mačka",
+      "obrazok": "https://cdn.pixabay.com/photo/2022/07/10/17/53/cartoon-cat-7313483_640.png"
+    },
+    {
+      "slovo": "Lev",
+      "obrazok": "https://st5.depositphotos.com/2255567/66509/v/450/depositphotos_665097122-stock-illustration-cute-lion-cartoon-on-white.jpg"
+    }
+  ]
+}
