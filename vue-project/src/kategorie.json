@@ -11,11 +11,39 @@
     },
     {
       "slovo": "Lev",
-      "obrazok": "https://st5.depositphotos.com/2255567/66509/v/450/depositphotos_665097122-stock-illustration-cute-lion-cartoon-on-white.jpg"
+      "obrazok": "https://cdn.pixabay.com/photo/2022/04/02/01/44/lion-7106027_960_720.png"
     },
     {
       "slovo": "Slon",
       "obrazok": "https://cdn.pixabay.com/photo/2023/04/10/02/58/elephant-7912677_1280.png"
+    },
+    {
+      "slovo": "Žirafa",
+      "obrazok": "https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/11503/giraffe-animal-clipart-md.png"
+    },
+    {
+      "slovo": "Bobor",
+      "obrazok": "https://cdn.pixabay.com/photo/2012/05/02/20/27/beaver-46240_960_720.png"
+    },
+    {
+      "slovo": "Ovečka",
+      "obrazok": "https://cdn.pixabay.com/photo/2016/05/12/23/03/lamb-1388937_640.png"
+    },
+    {
+      "slovo": "Had",
+      "obrazok": "https://cdn.pixabay.com/photo/2019/09/15/04/54/snake-kawaii-4477329_960_720.png"
+    },
+    {
+      "slovo": "Pavúk",
+      "obrazok": "https://www.t-shock.eu/nahled-m/fKxjqo2A.png"
+    },
+    {
+      "slovo": "Tiger",
+      "obrazok": "https://dbdzm869oupei.cloudfront.net/img/sticker/preview/51293.png"
+    },
+    {
+      "slovo": "Hroch",
+      "obrazok": "https://cdn.pixabay.com/photo/2012/04/12/21/18/hippo-30687_960_720.png"
     }
   ],
   "Značky áut": [
