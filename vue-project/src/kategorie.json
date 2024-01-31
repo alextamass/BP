@@ -1,5 +1,5 @@
 {
-  "kategorie": ["Zvieratá", "Značky áut", "Jedlá"],
+  "kategorie": ["Zvieratá", "Značky áut", "Ovocie"],
   "Zvieratá": [
     {
       "slovo": "Pes",
@@ -12,6 +12,38 @@
     {
       "slovo": "Lev",
       "obrazok": "https://st5.depositphotos.com/2255567/66509/v/450/depositphotos_665097122-stock-illustration-cute-lion-cartoon-on-white.jpg"
+    },
+    {
+      "slovo": "Slon",
+      "obrazok": "https://cdn.pixabay.com/photo/2023/04/10/02/58/elephant-7912677_1280.png"
+    }
+  ],
+  "Značky áut": [
+    {
+      "slovo": "Audi",
+      "obrazok": "https://purepng.com/public/uploads/large/purepng.com-audi-car-logologocar-brand-logoscarsaudi-1701527428038cl0rr.png"
+    },
+    {
+      "slovo": "BMW",
+      "obrazok": "https://w7.pngwing.com/pngs/902/326/png-transparent-bmw-x1-car-bmw-i-bmw-3-series-bmw-emblem-trademark-logo-thumbnail.png"
+    }
+  ],
+  "Ovocie": [
+    {
+      "slovo": "Jablko",
+      "obrazok": "https://cdn.pixabay.com/photo/2022/04/08/07/18/apples-7118902_1280.png"
+    },
+    {
+      "slovo": "Pomaranč",
+      "obrazok": "https://cdn.pixabay.com/photo/2020/06/01/12/21/orange-fruit-5246443_640.png"
+    },
+    {
+      "slovo": "Banány",
+      "obrazok": "https://cdn.pixabay.com/photo/2023/02/13/15/55/banana-7787676_1280.png"
+    },
+    {
+      "slovo": "Slivky",
+      "obrazok": "https://cdn.pixabay.com/photo/2017/01/19/14/32/plum-1992429_1280.png"
     }
   ]
 }
