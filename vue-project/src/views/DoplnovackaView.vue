@@ -10,7 +10,8 @@
     <div class="buttonDiv">
       <button @click="generate()" class="generovatButton">Generovať</button>
     </div>
-    <div v-if="generovat">
+    <button style="float: right" class="generovatButton"  @click="exportToPDF">Uložiť</button>
+    <div id="osemsmerovka" v-if="generovat">
       <div v-for="item in zvolenaKategoriaData" :key="item.slovo">
         <div class="riadok">
           <div class="obrazok">
@@ -28,6 +29,10 @@
 
 <script>
 import kategoriejson from '../kategorie.json';
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import html2pdf from 'html2pdf.js';
+
 
 export default {
   name: "DoplnovackaView",
@@ -66,6 +71,11 @@ export default {
       const index = Math.floor(Math.random() * slovo.length);
       const noveSlovo = slovo.substring(0, index) + '_' + slovo.substring(index + 1);
       return noveSlovo
+    },
+    exportToPDF() {
+      const content = document.getElementById('osemsmerovka');
+
+      html2pdf().from(content).save();
     },
   }
 };
