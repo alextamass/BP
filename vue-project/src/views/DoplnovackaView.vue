@@ -7,14 +7,22 @@
       </select>
       <p>Zvolená kategória: {{ zvolenaKategoria }}</p>
     </div>
-    <div v-if="zvolenaKategoria">
-      <div v-for="item in data" :key="item.slovo">
-        <p>{{ item.slovo }}</p>
-        <img :src="item.obrazok" alt="obrazok" style="max-width: 200px;">
+    <div class="buttonDiv">
+      <button @click="generate()" class="generovatButton">Generovať</button>
+    </div>
+    <div v-if="generovat">
+      <div v-for="item in zvolenaKategoriaData" :key="item.slovo">
+        <div class="slovo">
+          <p>{{ item.slovo }}</p>
+        </div>
+        <div class="obrazok">
+          <img :src="item.obrazok" alt="obrazok" style="max-width: 200px;">
+        </div>
       </div>
     </div>
   </div>
 </template>
+
 
 <script>
 import kategoriejson from '../kategorie.json';
@@ -25,17 +33,36 @@ export default {
     return {
       kategorie: kategoriejson.kategorie,
       zvolenaKategoria: '',
+      generovat: false,
+      zvolenaKategoriaData: [],
     };
   },
-  computed: {
-    data() {
-      if (this.zvolenaKategoria) {
-        return kategoriejson[this.zvolenaKategoria];
-      } else {
-        return [];
+  methods: {
+    generate(){
+      this.generovat = true;
+      if(this.zvolenaKategoriaData.length > 0){
+        this.zvolenaKategoriaData.splice(0, this.zvolenaKategoriaData.length)
       }
-    }
-  }
+      let i = 0;
+      while (i < 3) {
+        const index = Math.floor(Math.random() * kategoriejson[this.zvolenaKategoria].length);
+        const novyItem = kategoriejson[this.zvolenaKategoria][index];
+        console.log("testZacyklenia");
+        let duplikat = false;
+        for (const item of this.zvolenaKategoriaData) {
+          if (item.slovo === novyItem.slovo) {
+            duplikat = true;
+            break;
+          }
+        }
+        if (!duplikat) {
+          this.zvolenaKategoriaData.push(novyItem);
+          i++;
+        }
+      }
+
+    },
+  },
 };
 </script>
 
@@ -67,4 +94,37 @@ export default {
 .dropdown-select:hover {
   border-color: #007bff;
 }
+
+.generovatButton {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.generovatButton:hover {
+  background-color: #0056b3;
+}
+
+.buttonDiv{
+  text-align: center;
+  margin: 10px;
+}
+
+.slovo {
+  text-align: right;
+  font-size: 30px;
+  margin-right: 30%;
+}
+
+.obrazok {
+  justify-self: center;
+  margin-left: 30%;
+}
+
+
+
 </style>
