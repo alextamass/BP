@@ -13,7 +13,7 @@
     <div v-if="generovat">
       <div v-for="item in zvolenaKategoriaData" :key="item.slovo">
         <div class="slovo">
-          <p>{{ item.slovo }}</p>
+          <p>{{ vymazChar(item.slovo)}}</p>
         </div>
         <div class="obrazok">
           <img :src="item.obrazok" alt="obrazok" style="max-width: 200px;">
@@ -38,11 +38,9 @@ export default {
     };
   },
   methods: {
-    generate(){
+    generate() {
       this.generovat = true;
-      if(this.zvolenaKategoriaData.length > 0){
-        this.zvolenaKategoriaData.splice(0, this.zvolenaKategoriaData.length)
-      }
+      this.zvolenaKategoriaData = [];
       let i = 0;
       while (i < 3) {
         const index = Math.floor(Math.random() * kategoriejson[this.zvolenaKategoria].length);
@@ -60,9 +58,14 @@ export default {
           i++;
         }
       }
-
+      this.vymazChar();
     },
-  },
+    vymazChar(slovo) {
+      const index = Math.floor(Math.random() * slovo.length);
+      const noveSlovo = slovo.substring(0, index) + '_' + slovo.substring(index + 1);
+      return noveSlovo
+    },
+  }
 };
 </script>
 
