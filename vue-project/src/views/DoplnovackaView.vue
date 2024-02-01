@@ -12,11 +12,13 @@
     </div>
     <div v-if="generovat">
       <div v-for="item in zvolenaKategoriaData" :key="item.slovo">
-        <div class="slovo">
-          <p>{{ vymazChar(item.slovo)}}</p>
-        </div>
-        <div class="obrazok">
-          <img :src="item.obrazok" alt="obrazok" style="max-width: 200px;">
+        <div class="riadok">
+          <div class="obrazok">
+            <img :src="item.obrazok" alt="obrazok" style="max-width: 200px;">
+          </div>
+          <div class="slovo">
+           <p>{{ vymazChar(item.slovo)}}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -117,15 +119,22 @@ export default {
   margin: 10px;
 }
 
+.riadok{
+  margin-top: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .slovo {
   text-align: right;
   font-size: 30px;
-  margin-right: 30%;
 }
 
 .obrazok {
   justify-self: center;
-  margin-left: 30%;
+  margin-right: 10%;
 }
 
 
