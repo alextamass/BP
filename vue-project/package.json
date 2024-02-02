@@ -13,7 +13,9 @@
     "html2pdf.js": "^0.10.1",
     "jspdf": "^2.5.1",
     "pinia": "^2.1.7",
+    "print-js": "^1.6.0",
     "vue": "^3.3.11",
+    "vue-html-to-paper": "^2.0.3",
     "vue-html2pdf": "^1.8.0",
     "vue-router": "^4.2.5"
   },

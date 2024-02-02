@@ -1,4 +1,5 @@
 <template>
+  <body>
   <div>
     <h1 class="h1">Vytvorenie doplňovačky</h1>
     <div class="dropdown">
@@ -10,8 +11,8 @@
     <div class="buttonDiv">
       <button @click="generate()" class="generovatButton">Generovať</button>
     </div>
-    <button style="float: right" class="generovatButton"  @click="exportToPDF">Uložiť</button>
-    <div id="osemsmerovka" v-if="generovat">
+    <button style="float: right" class="generovatButton" onclick="window.print()">Vytlačiť</button>
+    <div id="osemsmerovka" v-if="generovat" class="tlac">
       <div v-for="item in zvolenaKategoriaData" :key="item.slovo">
         <div class="riadok">
           <div class="obrazok">
@@ -24,14 +25,12 @@
       </div>
     </div>
   </div>
+  </body>
 </template>
 
 
 <script>
 import kategoriejson from '../kategorie.json';
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-import html2pdf from 'html2pdf.js';
 
 
 export default {
@@ -72,16 +71,26 @@ export default {
       const noveSlovo = slovo.substring(0, index) + '_' + slovo.substring(index + 1);
       return noveSlovo
     },
-    exportToPDF() {
-      const content = document.getElementById('osemsmerovka');
-
-      html2pdf().from(content).save();
-    },
   }
 };
 </script>
 
 <style scoped>
+@media print {
+  .h1 {
+    visibility: hidden;
+  }
+  .dropdown {
+    visibility: hidden;
+  }
+  .generovatButton{
+    visibility: hidden;
+  }
+  #osemsmerovka {
+    visibility: visible;
+  }
+}
+
 .h1 {
   text-align: center;
   color: orangered;
