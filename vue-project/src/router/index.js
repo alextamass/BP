@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView.vue';
 import KrizovkaView from "@/views/KrizovkaView.vue";
 import OsemView from "@/views/OsemView.vue";
 import DoplnovackaView from "@/views/DoplnovackaView.vue";
+import SpajackaView from "@/views/SpajackaView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/Doplnovacka',
       name: 'Doplnovacka',
       component: DoplnovackaView,
+    },
+    {
+      path: '/Spajacka',
+      name: 'Spajacka',
+      component: SpajackaView,
     },
   ],
 });

@@ -11,7 +11,7 @@
     <div class="buttonDiv">
       <button @click="generate()" class="generovatButton">Generovať</button>
     </div>
-    <button style="float: right" class="generovatButton" onclick="window.print()">Vytlačiť</button>
+    <button style="float: right; margin-right: 3.5%" class="generovatButton" onclick="window.print()">Vytlačiť</button>
     <div id="osemsmerovka" v-if="generovat" class="tlac">
       <div v-for="item in zvolenaKategoriaData" :key="item.slovo">
         <div class="riadok">
