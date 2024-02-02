@@ -7,13 +7,22 @@
     <p>Zvolená kategória: {{ zvolenaKategoria }}</p>
   </div>
   <div class="inputContainer">
-    <input v-if="zvolenaKategoria" type="number" min="0" :max="getMaxDlzka" class="dlzkaInput">
+    <input v-if="zvolenaKategoria" v-model="zvolenaDlzka" type="number" min="0" :max="getMaxDlzka" class="dlzkaInput">
   </div>
   <div class="buttonDiv">
     <button @click="generate()" class="generovatButton">Generovať</button>
   </div>
-  <div v-for="item in zvolenaKategoriaData" :key="item.slovo">
-    <p>{{item.slovo}}</p>
+  <br>
+  <h2 v-if="generovat" class="h1">Pospájaj slová k správnym obrázkom</h2>
+  <div v-for="(item, index) in zvolenaKategoriaData" :key="index">
+    <div class="riadok">
+      <div class="obrazok">
+        <img :src="item.obrazok" alt="obrazok" style="max-width: 200px;">
+      </div>
+      <div class="slovo">
+        <p>{{zamiesaneSlova[index]}}</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -25,9 +34,12 @@ export default {
   name: "SpajackaView",
   data() {
     return {
+      generovat: false,
       kategorie: kategoriejson.kategorie,
       zvolenaKategoria: '',
+      zvolenaDlzka: 0,
       zvolenaKategoriaData: [],
+      zamiesaneSlova: [],
       maxdlzka: 0,
     };
   },
@@ -39,7 +51,38 @@ export default {
   },
   methods: {
     generate(){
-      this.zvolenaKategoriaData = kategoriejson[this.zvolenaKategoria];
+      this.generovat = true;
+      this.zvolenaKategoriaData = [];
+      let i = 0;
+      while (i < this.zvolenaDlzka){
+        const index = Math.floor(Math.random() * kategoriejson[this.zvolenaKategoria].length);
+        const novyItem = kategoriejson[this.zvolenaKategoria][index];
+        let duplikat = false;
+        for(const item of this.zvolenaKategoriaData){
+          if(novyItem.slovo === item.slovo){
+            duplikat = true;
+            break;
+          }
+        }
+        if(!duplikat){
+          this.zvolenaKategoriaData.push(novyItem);
+          i++;
+        }
+      }
+      this.zamiesaj();
+    },
+    zamiesaj(){
+      this.zamiesaneSlova = [];
+      for(let i = 0; i < this.zvolenaDlzka; i++) {
+        const item = this.zvolenaKategoriaData[i];
+        this.zamiesaneSlova.push(item.slovo);
+      }
+      for(let i = 0; i < this.zvolenaDlzka * 2; i++){
+        const index = Math.floor(Math.random() * this.zvolenaDlzka);
+        const item = this.zamiesaneSlova[index];
+        this.zamiesaneSlova.splice(index,1);
+        this.zamiesaneSlova.push(item);
+      }
     },
   },
 
@@ -107,6 +150,26 @@ export default {
   box-sizing: border-box;
   transition: border-color 0.3s ease;
 }
+
+
+.riadok{
+  margin-top: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.slovo {
+  text-align: right;
+  font-size: 30px;
+}
+
+.obrazok {
+  justify-self: center;
+  margin-right: 10%;
+}
+
 
 
 </style>
