@@ -1,5 +1,5 @@
 <template>
-  <h1>Vytvorenie Krizovky</h1>
+  <h1>Vytvorenie krížovky</h1>
   <div class="input">
     <input
         @keyup.enter="addWord"
