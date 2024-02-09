@@ -15,6 +15,7 @@
         placeholder="Zadaj nápovedu" />
     <br>
     <button
+        style="margin-top: 10px;"
         v-if="!disableButtons"
         @click="addWord"
         class="action-button">Pridať</button>
@@ -27,8 +28,26 @@
       </div>
     </div>
     <div>
-      <button  class="button-generate">Generovat</button>
+      <button @click="checkWords()" class="button-generate">Generovat</button>
     </div>
+  </div>
+  <div class="generovana-krizovka" v-if="showGrid">
+    <div class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
+      <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
+        <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell">
+          <input
+              v-model="cell.value"
+              :placeholder="cell.placeholder"
+              class="crossword-input"
+              @input="updateCell(rowIndex, colIndex)"
+              readonly
+          />
+        </div>
+     </div>
+    </div>
+  </div>
+  <div class="error-message" v-if="showError">
+    <p>{{ errorMessage }}</p>
   </div>
 
 </template>
@@ -42,6 +61,11 @@ export default {
       enteredWord : '',
       napoveda : '',
       napovedy: [],
+      columns: 15,
+      grid: [],
+      showGrid: false,
+      errorMessage: '',
+      showError: false,
     };
   },
   methods: {
@@ -51,6 +75,58 @@ export default {
         this.napovedy.push(this.napoveda);
         this.enteredWord = "";
         this.napoveda = "";
+      }
+    },
+    checkWords(){
+      if(this.enteredWords.length < 2){
+        this.errorMessage = "Zadany prilis maly pocet slov";
+        this.showError = true;
+      }
+      else{
+        this.showError = false;
+        this.initializeGrid();
+      }
+    },
+    initializeGrid() {
+      this.showGrid = true;
+      this.grid = Array.from({ length: this.columns }, () =>
+          Array.from({ length: this.columns }, () => ({ value: "", placeholder: "" }))
+      );
+
+      for (let i = 0; i < this.enteredWords.length; i++) {
+        const word = this.enteredWords[i];
+
+        if (word.length <= this.columns) {
+          let startRow = Math.floor(Math.random() * this.columns);
+          let startCol = Math.floor(Math.random() * this.columns);
+          const placeHorizontally = Math.random() < 0.5;
+
+          if (placeHorizontally && startCol + word.length > this.columns) {
+            startCol = this.columns - word.length;
+          } else if (!placeHorizontally && startRow + word.length > this.columns) {
+            startRow = this.columns - word.length;
+          }
+
+          for (let j = 0; j < word.length; j++) {
+            const char = word[j];
+            let row, col;
+
+            if (placeHorizontally) {
+              row = startRow;
+              col = startCol + j;
+            } else {
+              row = startRow + j;
+              col = startCol;
+            }
+
+            if (row < this.columns && col < this.columns && this.grid[row][col].placeholder === "") {
+              this.grid[row][col].placeholder = char;
+            } else {
+              this.initializeGrid();
+              return;
+            }
+          }
+        }
       }
     },
   },
@@ -71,8 +147,24 @@ h1{
   height: 100vh;
 }
 
+.generovana-krizovka{
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}
+
 .input-section {
   width: 40%;
+}
+
+.crossword-input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  outline: none;
 }
 
 .input {
@@ -97,6 +189,17 @@ h1{
   border-radius: 5px;
 }
 
+.error-message {
+  background-color: mistyrose;
+  color: firebrick;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .button-generate {
   padding: 10px 20px;
   background-color: dodgerblue;
@@ -104,7 +207,7 @@ h1{
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 25px;
+  margin: 10px;
   transition: background-color 0.3s ease;
 }
 
@@ -117,6 +220,7 @@ h1{
 }
 
 .slova-container {
+  margin-top: 10px;
   font-size: medium;
   color: deepskyblue;
   display: flex;
@@ -125,6 +229,30 @@ h1{
   gap: 20px;
 }
 
+.crossword-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.crossword-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: 1px solid black;
+  height: 40px;
+  width: 40px;
+}
+
+.crossword-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  width: fit-content;
+  background-color: #eee;
+  border: 2px solid black;
+  border-radius: 5px;
+}
 
 
 </style>
