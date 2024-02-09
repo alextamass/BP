@@ -82,7 +82,28 @@ export default {
         this.errorMessage = "Zadany prilis maly pocet slov";
         this.showError = true;
       }
-      else{
+      else {
+        for(let i = 0; i < this.enteredWords.length; i ++){
+          let word = this.enteredWords[i];
+          for(let j = 0; j < this.enteredWords.length; j ++){
+            let comparedWord = this.enteredWords[j];
+            let maSpolocne = false;
+            if(j === i) continue;
+            for(let g = 0; g < word.length; g++){
+              let char = word.charAt(g);
+              if(comparedWord.includes(char)){
+                maSpolocne = true;
+                break;
+              }
+            }
+            if(maSpolocne === false){
+              this.errorMessage = "Zadane slova nemaju ziadny spolocny znak" + word;
+              this.showError = true;
+              return;
+            }
+          }
+        }
+        //upravit tak, ze staci aby mal spolocny znak len s jednym slovom, nie so vsetkymi
         this.showError = false;
         this.initializeGrid();
       }
