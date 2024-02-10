@@ -19,17 +19,24 @@
         v-if="!disableButtons"
         @click="addWord"
         class="action-button">Pridať</button>
-    <div class="slova-container">
-      <div class="enteredWords" v-for="(word, index) in enteredWords" :key="index">
-        Slovo: {{word}}
-      </div>
-      <div class="enteredWords" v-for="(word, index) in napovedy" :key="index">
-        Napoveda: {{word}}
+    <div class="container">
+      <div class="slova-container">
+        <div v-for="(word, index) in enteredWords" :key="index" class="riadok">
+          <div class="entered-word">Slovo: {{ word }}</div>
+          <div class="napoveda">Napoveda: {{ napovedy[index] }}</div>
+          <button class="delete-button" @click="vymaz(index)">
+            <img style="width: 25px" src="https://cdn-icons-png.flaticon.com/512/3687/3687412.png" alt="" />
+          </button>
+        </div>
       </div>
     </div>
     <div>
+
       <button @click="checkWords()" class="button-generate">Generovat</button>
     </div>
+  </div>
+  <div class="error-message" v-if="showError">
+    <p>{{ errorMessage }}</p>
   </div>
   <div class="generovana-krizovka" v-if="showGrid">
     <div class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
@@ -45,9 +52,6 @@
         </div>
      </div>
     </div>
-  </div>
-  <div class="error-message" v-if="showError">
-    <p>{{ errorMessage }}</p>
   </div>
 
 </template>
@@ -85,10 +89,10 @@ export default {
       else {
         for(let i = 0; i < this.enteredWords.length; i ++){
           let word = this.enteredWords[i];
+          let maSpolocne = false;
           for(let j = 0; j < this.enteredWords.length; j ++){
             let comparedWord = this.enteredWords[j];
-            let maSpolocne = false;
-            if(j === i) continue;
+            if(j === i || maSpolocne) continue;
             for(let g = 0; g < word.length; g++){
               let char = word.charAt(g);
               if(comparedWord.includes(char)){
@@ -97,13 +101,12 @@ export default {
               }
             }
             if(maSpolocne === false){
-              this.errorMessage = "Zadane slova nemaju ziadny spolocny znak" + word;
+              this.errorMessage = "Zadane slova nemaju ziadny spolocny znak : " + word;
               this.showError = true;
               return;
             }
           }
         }
-        //upravit tak, ze staci aby mal spolocny znak len s jednym slovom, nie so vsetkymi
         this.showError = false;
         this.initializeGrid();
       }
@@ -149,6 +152,10 @@ export default {
           }
         }
       }
+    },
+    vymaz(index){
+      this.enteredWords.splice(index,1);
+      this.napovedy.splice(index,1);
     },
   },
 };
@@ -240,15 +247,6 @@ h1{
   background-color: darkblue;
 }
 
-.slova-container {
-  margin-top: 10px;
-  font-size: medium;
-  color: deepskyblue;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
 
 .crossword-row {
   display: flex;
@@ -270,10 +268,49 @@ h1{
   grid-template-columns: repeat(8, 1fr);
   gap: 2px;
   width: fit-content;
-  background-color: #eee;
+  background-color: white;
   border: 2px solid black;
   border-radius: 5px;
 }
 
+.slova-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.riadok {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.entered-word,
+.napoveda {
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.entered-word {
+  color: orangered;
+}
+
+.napoveda {
+  color: orange;
+}
+
+.container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-button{
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
 
 </style>
