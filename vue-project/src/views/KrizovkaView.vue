@@ -3,20 +3,17 @@
   <div class="input">
     <input
         @keyup.enter="addWord"
-        :disabled="this.disableButtons"
         type="text" v-model="enteredWord"
         class="text-field"
         placeholder="Zadaj slovo, ktoré chceš pridať" />
     <input
         @keyup.enter="addWord"
-        :disabled="this.disableButtons"
         type="text" v-model="napoveda"
         class="text-field"
         placeholder="Zadaj nápovedu" />
     <br>
     <button
         style="margin-top: 10px;"
-        v-if="!disableButtons"
         @click="addWord"
         class="action-button">Pridať</button>
     <div class="container">
@@ -130,40 +127,27 @@ export default {
       for (let i = 0; i < this.enteredWords.length; i++) {
         const word = this.enteredWords[i];
         //nevpisat odpoved dalsi krat
-        if(word === this.vysledokKrizovky) continue;
-
-        if (word.length <= this.columns) {
-          let startRow = Math.floor(Math.random() * this.columns);
-          let startCol = Math.floor(Math.random() * this.columns);
-          const placeHorizontally = Math.random() < 0.5;
-
-          if (placeHorizontally && startCol + word.length > this.columns) {
-            startCol = this.columns - word.length;
-          } else if (!placeHorizontally && startRow + word.length > this.columns) {
-            startRow = this.columns - word.length;
-          }
-
-          for (let j = 0; j < word.length; j++) {
-            const char = word[j];
-            let row, col;
-
-            if (placeHorizontally) {
-              row = startRow;
-              col = startCol + j;
-            } else {
-              row = startRow + j;
-              col = startCol;
-            }
-
-            if (row < this.columns && col < this.columns && this.grid[row][col].placeholder === "") {
-              this.grid[row][col].placeholder = char;
-            } else {
-              this.initializeGrid();
-              return;
-            }
+        if (word === this.vysledokKrizovky) continue;
+        let common = this.findCommonChar(word);
+        for(let j = 0; j < common.length; j ++){
+          console.log(""+common[j]);
+        }
+      }
+    },
+    findCommonChar(slovo){
+      console.log(slovo+"test");
+      let common = [];
+      for(let i = 0; i < slovo.length; i++){
+        let char = slovo.charAt(i);
+        for(let j = 0; j < this.vysledokKrizovky.length; j++){
+          console.log(j);
+          if(char === this.vysledokKrizovky.charAt(j)){
+            common.push(j);
+            console.log("Spolocny :", char, "pozicia :", j);
           }
         }
       }
+      return common;
     },
     vymaz(index){
       this.enteredWords.splice(index,1);
