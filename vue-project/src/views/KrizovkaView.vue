@@ -27,11 +27,14 @@
           <button class="delete-button" @click="vymaz(index)">
             <img style="width: 25px" src="https://cdn-icons-png.flaticon.com/512/3687/3687412.png" alt="" />
           </button>
+          <button class="delete-button" style="margin-left: 7px" @click="setVysledokKrizovky(index)">
+            <img style="width: 25px" src="https://freepngimg.com/thumb/finish_line/26665-3-finish-line-transparent-thumb.png" alt="" />
+          </button>
         </div>
       </div>
     </div>
+    <p v-if="this.vysledokKrizovky !== ''">Hladane slovo : {{this.getVysledokKrizovky}}</p>
     <div>
-
       <button @click="checkWords()" class="button-generate">Generovat</button>
     </div>
   </div>
@@ -70,6 +73,7 @@ export default {
       showGrid: false,
       errorMessage: '',
       showError: false,
+      vysledokKrizovky: '',
     };
   },
   methods: {
@@ -117,8 +121,16 @@ export default {
           Array.from({ length: this.columns }, () => ({ value: "", placeholder: "" }))
       );
 
+      //vpisat vysledok prvy
+      let column = Math.floor(this.columns/2);
+      for(let i = 0; i < this.vysledokKrizovky.length; i ++){
+        this.grid[column][i].placeholder = this.vysledokKrizovky.charAt(i);
+      }
+
       for (let i = 0; i < this.enteredWords.length; i++) {
         const word = this.enteredWords[i];
+        //nevpisat odpoved dalsi krat
+        if(word === this.vysledokKrizovky) continue;
 
         if (word.length <= this.columns) {
           let startRow = Math.floor(Math.random() * this.columns);
@@ -156,6 +168,14 @@ export default {
     vymaz(index){
       this.enteredWords.splice(index,1);
       this.napovedy.splice(index,1);
+    },
+    setVysledokKrizovky(index){
+      this.vysledokKrizovky = this.enteredWords[index];
+    },
+  },
+  computed: {
+    getVysledokKrizovky(){
+      return this.vysledokKrizovky;
     },
   },
 };
