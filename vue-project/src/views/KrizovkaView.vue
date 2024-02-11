@@ -119,20 +119,60 @@ export default {
       );
 
       //vpisat vysledok prvy
-      let column = Math.floor(this.columns/2);
+      const startColumn = Math.floor(this.columns / 2);
       for(let i = 0; i < this.vysledokKrizovky.length; i ++){
-        this.grid[column][i].placeholder = this.vysledokKrizovky.charAt(i);
+        this.grid[startColumn][i].placeholder = this.vysledokKrizovky.charAt(i);
       }
 
       for (let i = 0; i < this.enteredWords.length; i++) {
         const word = this.enteredWords[i];
         //nevpisat odpoved dalsi krat
         if (word === this.vysledokKrizovky) continue;
-        let common = this.findCommonChar(word);
-        for(let j = 0; j < common.length; j ++){
-          console.log(""+common[j]);
+        const common = this.findCommonChar(word);
+        if (common.length === 0) {
+          console.log(`No common characters found for ${word}`);
+          continue;
+        }
+        //vsetky spolocne prejst
+        for(let j = 0; j < common.length; j++){
+          const startRow = startColumn - common[j].i;
+          const startCol = common[j].j;
+          if(this.placeWord(word,startRow,startCol, startColumn)) break;
+        }
+        // for (let j = 0; j < word.length; j++) {
+        //   const char = word.charAt(j);
+        //   if (startRow + j < this.columns && startCol + j < this.columns) {
+        //     //neprepisovat uz vlozene slovo
+        //     if(this.grid[startRow + j][startCol].placeholder === '') {
+        //       //zistit ci aj druha strana je prazdna
+        //       this.grid[startRow + j][startCol].placeholder = char;
+        //     }
+        //   } else {
+        //     console.log(`Word ${word} doesn't fit in the grid`);
+        //     break;
+        //   }
+        // }
+      }
+    },
+    placeWord(word, startRow, startCol, odpovedCol){
+      // je cely riadok okrem odpovede prazdny
+      for (let i = 0; i < this.columns; i++){
+        if(!(this.grid[i][startCol].placeholder === '') && i !== odpovedCol) return false;
+      }
+      for (let j = 0; j < word.length; j++) {
+        const char = word.charAt(j);
+        if (startRow + j < this.columns && startCol + j < this.columns) {
+          //neprepisovat uz vlozene slovo
+          if(this.grid[startRow + j][startCol].placeholder === '') {
+            //zistit ci aj druha strana je prazdna
+            this.grid[startRow + j][startCol].placeholder = char;
+          }
+        } else {
+          console.log('Prekrocilo hranice');
+          break;
         }
       }
+      return true;
     },
     findCommonChar(slovo){
       console.log(slovo+"test");
@@ -140,9 +180,8 @@ export default {
       for(let i = 0; i < slovo.length; i++){
         let char = slovo.charAt(i);
         for(let j = 0; j < this.vysledokKrizovky.length; j++){
-          console.log(j);
           if(char === this.vysledokKrizovky.charAt(j)){
-            common.push(j);
+            common.push({j,i});
             console.log("Spolocny :", char, "pozicia :", j);
           }
         }
