@@ -53,10 +53,14 @@
      </div>
     </div>
   </div>
+  <div style="text-align: center" v-for="(napoveda, index) in ocislovaneNapovedy" :key="index">
+    <p>{{napoveda.plac}}.  {{napoveda.napoveda}}</p>
+  </div>
 
 </template>
 
 <script>
+
 export default {
   name: "KrizovkaView",
   data() {
@@ -71,6 +75,8 @@ export default {
       errorMessage: '',
       showError: false,
       vysledokKrizovky: '',
+      ocislovaneNapovedy: [],
+      placed: 0,
     };
   },
   methods: {
@@ -83,6 +89,7 @@ export default {
       }
     },
     checkWords(){
+      //upravit aby sa vsetky porovnavali s odpovedou a nie navzajom
       if(this.enteredWords.length < 2){
         this.errorMessage = "Zadany prilis maly pocet slov";
         this.showError = true;
@@ -113,6 +120,8 @@ export default {
       }
     },
     initializeGrid() {
+      this.ocislovaneNapovedy = [];
+      this.placed = 0;
       this.showGrid = true;
       this.grid = Array.from({ length: this.columns }, () =>
           Array.from({ length: this.columns }, () => ({ value: "", placeholder: "" }))
@@ -126,6 +135,7 @@ export default {
 
       for (let i = 0; i < this.enteredWords.length; i++) {
         const word = this.enteredWords[i];
+        const napoveda = this.napovedy[i];
         //nevpisat odpoved dalsi krat
         if (word === this.vysledokKrizovky) continue;
         const common = this.findCommonChar(word);
@@ -137,21 +147,14 @@ export default {
         for(let j = 0; j < common.length; j++){
           const startRow = startColumn - common[j].i;
           const startCol = common[j].j;
-          if(this.placeWord(word,startRow,startCol, startColumn)) break;
+          if(this.placeWord(word,startRow,startCol, startColumn)){
+            this.placed++;
+            let plac = this.placed
+            this.grid[0][startCol].placeholder = this.placed;
+            this.ocislovaneNapovedy.push({plac,napoveda});
+            break;
+          }
         }
-        // for (let j = 0; j < word.length; j++) {
-        //   const char = word.charAt(j);
-        //   if (startRow + j < this.columns && startCol + j < this.columns) {
-        //     //neprepisovat uz vlozene slovo
-        //     if(this.grid[startRow + j][startCol].placeholder === '') {
-        //       //zistit ci aj druha strana je prazdna
-        //       this.grid[startRow + j][startCol].placeholder = char;
-        //     }
-        //   } else {
-        //     console.log(`Word ${word} doesn't fit in the grid`);
-        //     break;
-        //   }
-        // }
       }
     },
     placeWord(word, startRow, startCol, odpovedCol){
