@@ -41,11 +41,13 @@
   <div class="generovana-krizovka" v-if="showGrid">
     <div class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
       <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
-        <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell">
+        <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell" :class="{'empty': !cell.placeholder }"
+        >
           <input
               v-model="cell.value"
               :placeholder="cell.placeholder"
               class="crossword-input"
+              :class="{ 'naplnene': cell.placeholder, 'prazdne': !cell.placeholder, 'odpoved' : rowIndex === this.odpoved }"
               @input="updateCell(rowIndex, colIndex)"
               readonly
           />
@@ -77,6 +79,7 @@ export default {
       vysledokKrizovky: '',
       ocislovaneNapovedy: [],
       placed: 0,
+      odpoved: 0,
     };
   },
   methods: {
@@ -129,6 +132,7 @@ export default {
 
       //vpisat vysledok prvy
       const startColumn = Math.floor(this.columns / 2);
+      this.odpoved = startColumn;
       for(let i = 0; i < this.vysledokKrizovky.length; i ++){
         this.grid[startColumn][i].placeholder = this.vysledokKrizovky.charAt(i);
       }
@@ -359,4 +363,19 @@ h1{
   padding: 0;
 }
 
+.prazdne {
+  background-color: white;
+}
+
+.naplnene {
+  background-color: lightgray;
+}
+
+.empty{
+  visibility: hidden;
+}
+
+.odpoved{
+  background-color: orange;
+}
 </style>
