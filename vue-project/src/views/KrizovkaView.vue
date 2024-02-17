@@ -33,6 +33,7 @@
     <p v-if="this.vysledokKrizovky !== ''">Hladane slovo : {{this.getVysledokKrizovky}}</p>
     <div>
       <button @click="checkWords()" class="button-generate">Generovat</button>
+      <button @click="vytlacit()" class="button-generate">Vytlacit</button>
     </div>
   </div>
   <div class="error-message" v-if="showError">
@@ -47,7 +48,7 @@
               v-model="cell.value"
               :placeholder="cell.placeholder"
               class="crossword-input"
-              :class="{ 'naplnene': cell.placeholder, 'prazdne': !cell.placeholder, 'odpoved' : rowIndex === this.odpoved }"
+              :class="{ 'naplnene': cell.placeholder, 'prazdne': !cell.placeholder, 'odpoved' : rowIndex === this.odpoved, 'hidden' : this.hidden && rowIndex !== 0 }"
               @input="updateCell(rowIndex, colIndex)"
               readonly
           />
@@ -80,6 +81,7 @@ export default {
       ocislovaneNapovedy: [],
       placed: 0,
       odpoved: 0,
+      hidden: false,
     };
   },
   methods: {
@@ -201,6 +203,9 @@ export default {
     },
     setVysledokKrizovky(index){
       this.vysledokKrizovky = this.enteredWords[index];
+    },
+    vytlacit(){
+      this.hidden = !this.hidden;
     },
   },
   computed: {
@@ -377,5 +382,9 @@ h1{
 
 .odpoved{
   background-color: orange;
+}
+
+.hidden{
+  font-size: 0;
 }
 </style>
