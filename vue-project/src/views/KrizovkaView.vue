@@ -1,6 +1,7 @@
 <template>
   <body>
   <h1>Vytvorenie krížovky</h1>
+  <button @click="showNapoveda" class="action-button" style="margin-left: 10px">{{this.napovedaText}}</button>
   <div class="input">
     <input
         @keyup.enter="addWord"
@@ -36,6 +37,16 @@
       <button @click="checkWords()" class="button-generate">Generovat</button>
       <button @click="vytlacit()" class="button-generate">Vytlacit</button>
     </div>
+  </div>
+  <div class="how-to" v-if="zobrazitNapovedu">
+  <p>
+    Zadaj aspoň dve slová s nápovedou, ktoré majú aspoň jeden spoločný znak. <br>
+    Kliknutím na tlačítko
+    <button class="delete-button">
+      <img style="width: 25px" src="https://freepngimg.com/thumb/finish_line/26665-3-finish-line-transparent-thumb.png" alt="" />
+    </button>
+    pri slove označíš odpoveď. <br> Kliknutím na tlačítko Generovať sa krížovka vygeneruje.
+  </p>
   </div>
   <div class="error-message" v-if="showError">
     <p>{{ errorMessage }}</p>
@@ -83,6 +94,7 @@ export default {
       placed: 0,
       odpoved: 0,
       hidden: false,
+      zobrazitNapovedu: false,
     };
   },
   methods: {
@@ -208,10 +220,19 @@ export default {
     vytlacit(){
       this.hidden = !this.hidden;
     },
+    showNapoveda(){
+      this.zobrazitNapovedu = !this.zobrazitNapovedu;
+    },
   },
   computed: {
     getVysledokKrizovky(){
       return this.vysledokKrizovky;
+    },
+    napovedaText(){
+      if(this.zobrazitNapovedu){
+        return "Skryť návod";
+      }
+      return "Zobraziť návod";
     },
   },
 };
@@ -314,7 +335,7 @@ h1{
 .crossword-grid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  gap: 2px;
+  gap: 1px;
   width: fit-content;
   background-color: white;
   border: 2px solid black;
@@ -383,5 +404,16 @@ h1{
 
 body{
   background-color: #1b1b1c;
+}
+
+.how-to{
+  margin: 5px;
+  background-color: deepskyblue;
+  text-align: center;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 5px;
+  color: black;
 }
 </style>

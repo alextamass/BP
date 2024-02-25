@@ -1,5 +1,5 @@
 {
-  "kategorie": ["Zvieratá", "Značky áut", "Ovocie"],
+  "kategorie": ["Zvieratá", "Dopravné prostriedky", "Ovocie"],
   "Zvieratá": [
     {
       "slovo": "Pes",
@@ -46,14 +46,38 @@
       "obrazok": "https://cdn.pixabay.com/photo/2012/04/12/21/18/hippo-30687_960_720.png"
     }
   ],
-  "Značky áut": [
+  "Dopravné prostriedky": [
     {
-      "slovo": "Audi",
-      "obrazok": "https://purepng.com/public/uploads/large/purepng.com-audi-car-logologocar-brand-logoscarsaudi-1701527428038cl0rr.png"
+      "slovo": "Auto",
+      "obrazok": "https://cdn.pixabay.com/photo/2022/06/02/18/17/car-7238650_640.png"
     },
     {
-      "slovo": "BMW",
-      "obrazok": "https://w7.pngwing.com/pngs/902/326/png-transparent-bmw-x1-car-bmw-i-bmw-3-series-bmw-emblem-trademark-logo-thumbnail.png"
+      "slovo": "Autobus",
+      "obrazok": "https://www.obeczavod.sk/wp-content/uploads/2015/03/autobus4.png"
+    },
+    {
+      "slovo": "Traktor",
+      "obrazok": "https://obrazky.superia.cz/nahled-velky/traktor.png"
+    },
+    {
+      "slovo": "Kombajn",
+      "obrazok": "https://obrazky.superia.cz/nahled-velky/kombajn.png"
+    },
+    {
+      "slovo": "Lietadlo",
+      "obrazok": "https://cdn.pixabay.com/photo/2022/04/20/01/19/airplane-7144043_1280.png"
+    },
+    {
+      "slovo": "Motorka",
+      "obrazok": "https://cdn.pixabay.com/photo/2014/04/03/10/05/motorcycle-309784_960_720.png"
+    },
+    {
+      "slovo": "Loď",
+      "obrazok": "https://clipart-library.com/image_gallery/n1158039.png"
+    },
+    {
+      "slovo": "Vrtuľník",
+      "obrazok": "https://obrazky.superia.cz/1280/vrtulnik.png"
     }
   ],
   "Ovocie": [
@@ -72,10 +96,6 @@
     {
       "slovo": "Slivky",
       "obrazok": "https://cdn.pixabay.com/photo/2017/01/19/14/32/plum-1992429_1280.png"
-    },
-    {
-      "slovo": "Jablko",
-      "obrazok": "https://ovocie.estranky.sk/img/mid/43/jablko.jpg"
     }
   ]
 }
