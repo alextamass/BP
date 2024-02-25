@@ -1,4 +1,5 @@
 <template>
+  <body>
   <h1 class="h1">Vytvorenie spájačky</h1>
   <div class="dropdown">
     <select class="dropdown-select" v-model="zvolenaKategoria">
@@ -24,6 +25,7 @@
       </div>
     </div>
   </div>
+  </body>
 </template>
 
 <script>
@@ -170,6 +172,9 @@ export default {
   margin-right: 10%;
 }
 
+body{
+  background-color: #1b1b1c;
+}
 
 
 </style>

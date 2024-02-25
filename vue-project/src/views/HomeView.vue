@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg">
     <div>
       <h2 class="home-heading">Bakalárska práca Alex Tamáš</h2>
       <p class="home-paragraph">
@@ -37,5 +37,9 @@ export default {
   text-align: center;
   max-width: 600px;
   margin: 0 auto;
+}
+
+.bg{
+  background-color: #1b1b1c;
 }
 </style>

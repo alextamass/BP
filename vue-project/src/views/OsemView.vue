@@ -258,6 +258,7 @@ export default {
 .container {
   display: flex;
   height: 100vh;
+  background-color: #1b1b1c;
 }
 
 .h1 {

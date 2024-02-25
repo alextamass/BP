@@ -18,4 +18,6 @@ import Navigation from "@/components/Navigation.vue";
     display: none;
   }
 }
+
+
 </style>

@@ -156,6 +156,8 @@ export default {
   margin-right: 10%;
 }
 
-
+body{
+  background-color: #1b1b1c;
+}
 
 </style>

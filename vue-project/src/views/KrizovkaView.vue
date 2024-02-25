@@ -1,4 +1,5 @@
 <template>
+  <body>
   <h1>Vytvorenie krížovky</h1>
   <div class="input">
     <input
@@ -59,7 +60,7 @@
   <div style="text-align: center" v-for="(napoveda, index) in ocislovaneNapovedy" :key="index">
     <p>{{napoveda.plac}}.  {{napoveda.napoveda}}</p>
   </div>
-
+  </body>
 </template>
 
 <script>
@@ -72,7 +73,7 @@ export default {
       enteredWord : '',
       napoveda : '',
       napovedy: [],
-      columns: 15,
+      columns: 20,
       grid: [],
       showGrid: false,
       errorMessage: '',
@@ -217,27 +218,19 @@ export default {
 </script>
 
 <style scoped>
+
+
 h1{
   text-align: center;
   color: orangered;
   margin: 10px;
 }
 
-.krizovka-container {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 100vh;
-}
 
 .generovana-krizovka{
   display: flex;
   justify-content: center;
   margin: 10px;
-}
-
-.input-section {
-  width: 40%;
 }
 
 .crossword-input {
@@ -386,5 +379,9 @@ h1{
 
 .hidden{
   font-size: 0;
+}
+
+body{
+  background-color: #1b1b1c;
 }
 </style>
