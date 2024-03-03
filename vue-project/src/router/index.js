@@ -4,6 +4,7 @@ import KrizovkaView from "@/views/KrizovkaView.vue";
 import OsemView from "@/views/OsemView.vue";
 import DoplnovackaView from "@/views/DoplnovackaView.vue";
 import SpajackaView from "@/views/SpajackaView.vue";
+import EditorKrizovkyView from "@/views/EditorKrizovkyView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/Spajacka',
       name: 'Spajacka',
       component: SpajackaView,
+    },
+    {
+      path: '/EditKrizovka',
+      name: 'EditKrizovka',
+      component: EditorKrizovkyView,
     },
   ],
 });

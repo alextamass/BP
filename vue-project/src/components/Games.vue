@@ -19,10 +19,11 @@ export default {
   data() {
     return {
       images: [
-        { url: 'https://www.studentskycasopis.sk/studentskycasopis.php?action=show_img&id=2270', name: 'Vytvoriť Osemsmerovku', path: "Osemsmerovka" },
-        { url: 'https://img.grada.cz/_t_/media/sprinx.bookimages/138449_Kniha_obrazkove_krizovky_pro_deti_Kneblova_Grada_600_0_fit.jpg', name: 'Vytvoriť Krížovku', path: "Krizovka" },
+        { url: 'https://www.studentskycasopis.sk/studentskycasopis.php?action=show_img&id=2270', name: 'Generátor Osemsmeroviek', path: "Osemsmerovka" },
+        { url: 'https://img.grada.cz/_t_/media/sprinx.bookimages/138449_Kniha_obrazkove_krizovky_pro_deti_Kneblova_Grada_600_0_fit.jpg', name: 'Generátor Krížoviek', path: "Krizovka" },
         { url: 'https://www.vydarkus.eu/images/stories/virtuemart/product//obal5284.jpg', name : 'Vytvoriť doplnovačku', path: 'Doplnovacka'},
-        { url: 'https://zvedavedeti.sk/wp-content/uploads/2021/09/kolaz-vytvor-si-svet-zvierat.jpg', name : 'Vytvoriť spájačku', path: 'Spajacka'}
+        { url: 'https://zvedavedeti.sk/wp-content/uploads/2021/09/kolaz-vytvor-si-svet-zvierat.jpg', name : 'Vytvoriť spájačku', path: 'Spajacka'},
+        { url: 'https://zvedavedeti.sk/wp-content/uploads/2021/09/kolaz-vytvor-si-svet-zvierat.jpg', name : 'Editor Krížoviek', path: 'EditKrizovka'}
       ],
     };
   },
