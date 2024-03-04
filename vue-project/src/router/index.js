@@ -5,6 +5,7 @@ import OsemView from "@/views/OsemView.vue";
 import DoplnovackaView from "@/views/DoplnovackaView.vue";
 import SpajackaView from "@/views/SpajackaView.vue";
 import EditorKrizovkyView from "@/views/EditorKrizovkyView.vue";
+import EditorOsemsmeroviekView from "@/views/EditorOsemsmeroviekView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,10 @@ const router = createRouter({
       path: '/EditKrizovka',
       name: 'EditKrizovka',
       component: EditorKrizovkyView,
+    },{
+      path: '/EditOsemsmerovka',
+      name: 'EditOsemsmerovka',
+      component: EditorOsemsmeroviekView,
     },
   ],
 });
