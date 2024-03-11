@@ -10,17 +10,19 @@
   <div class="error-message" v-if="showError">
     <p>{{ errorMessage }}</p>
   </div>
-  <div class="generovana-krizovka" v-if="showGrid">
+  <div class="generovana-krizovka" v-if="showGrid" @keydown.arrow-left="moveLeft" @keydown.arrow-right="moveRight" @keydown.arrow-up="moveUp" @keydown.arrow-down="moveDown">
     <div class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
       <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
-        <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell"
-        >
+        <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell">
           <input
               v-model="cell.value"
               :placeholder="cell.placeholder"
               class="crossword-input"
               @input="updateCell(rowIndex, colIndex)"
               maxlength="1"
+              @keydown.enter="$event.target.blur()"
+              @keydown.tab="moveNext"
+              :tabindex="rowIndex * columns + colIndex"
           />
         </div>
       </div>
@@ -29,6 +31,15 @@
   <div style="text-align: center" v-for="(napoveda, index) in ocislovaneNapovedy" :key="index">
     <p>{{napoveda.plac}}.  {{napoveda.napoveda}}</p>
   </div>
+
+  <div>
+    <input v-model="txtOdpovede[0]" class="odpovede" placeholder="Zadaj nápovedu">
+    <button @click="addTextField" class="action-button">Pridať textové pole</button>
+    <div v-for="(index) in pridaneTxt" :key="index">
+      <input v-model="txtOdpovede[index]" class="" placeholder="Zadaj odpoved">
+    </div>
+  </div>
+
   </body>
 </template>
 
@@ -38,6 +49,7 @@ export default {
   name: "EditorKrizovkyView",
   data() {
     return {
+      vyberanieOdpovedi : false,
       enteredWords: [],
       enteredWord : '',
       napoveda : '',
@@ -54,6 +66,8 @@ export default {
       hidden: false,
       zobrazitNapovedu: false,
       velkost : 0,
+      txtOdpovede: [''],
+      pridaneTxt: []
     };
   },
   methods: {
@@ -68,6 +82,45 @@ export default {
     },
     showNapoveda(){
       this.zobrazitNapovedu = !this.zobrazitNapovedu;
+    },
+    moveUp(event) {
+      const currentIndex = event.target.tabIndex;
+      if (currentIndex % this.columns === 0) {
+        event.preventDefault();
+      } else {
+        this.setFocus(currentIndex - 1);
+      }
+    },
+    moveDown(event) {
+      const currentIndex = event.target.tabIndex;
+      if ((currentIndex + 1) % this.columns === 0 || currentIndex === this.grid.length * this.columns - 1) {
+        event.preventDefault();
+      } else {
+        this.setFocus(currentIndex + 1);
+      }
+    },
+    moveLeft(event) {
+      const currentIndex = event.target.tabIndex;
+      if (currentIndex < this.columns) {
+        event.preventDefault();
+      } else {
+        this.setFocus(currentIndex - this.columns);
+      }
+    },
+    moveRight(event) {
+      const currentIndex = event.target.tabIndex;
+      if (currentIndex >= this.grid.length * this.columns - this.columns) {
+        event.preventDefault();
+      } else {
+        this.setFocus(currentIndex + this.columns);
+      }
+    },
+    setFocus(index) {
+      const targetInput = document.querySelector(`input[tabindex="${index}"]`);
+      targetInput.focus();
+    },
+    addTextField() {
+      this.pridaneTxt.push('');
     },
   },
   computed: {
@@ -282,4 +335,5 @@ body{
   width: 100%;
   box-sizing: border-box;
 }
+
 </style>
