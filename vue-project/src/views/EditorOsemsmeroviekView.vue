@@ -26,9 +26,42 @@
           </div>
         </div>
         <section v-if="showGrid">
+
+          <div style="text-align: center">
+            <label>Typ napovedy: </label>
+            <select @change="zmenNapovedu()" id="typNapovedy" v-model="typNapovedy">
+              <option value="Kreslená nápoveda">Kreslená nápoveda</option>
+              <option value="Obrázková nápoveda">Obrázková nápoveda</option>
+              <option value="Písomná nápoveda">Písomná nápoveda</option>
+            </select>
+          </div>
+          <div v-if="this.zobrazNapovedu === 2" style="text-align: center">
+            <label>Lekcia:</label>
+            <select v-model="lekcia">
+              <option v-for="item in lekcie" :key="item" :value="item">{{ item }}</option>
+            </select>
+          </div>
           <h1 class="hladaneSlova">Hľadané slová</h1>
-          <div  v-for="(word, index) in enteredWords" :key="index" class="words">
-            {{index + 1}} :  {{word}}
+
+          <div v-if="this.zobrazNapovedu === 2" style="text-align: center" class="obrazky" v-for="item in state.todos" :key="item.author">
+            <img v-if="item.author === this.lekcia" style="width: 250px" :src="item.todo" alt="">
+          </div>
+
+          <div style="text-align: center" v-if="zobrazNapovedu === 3" v-for="index in this.textField">
+            <input type="text">
+            <div v-if="index === this.textField">
+              <button @click="minus()">
+                <img style="width: 25px" src="https://static.vecteezy.com/system/resources/previews/009/267/401/original/minus-sign-icon-free-png.png" alt="" />
+              </button>
+              <button @click="plus()">
+                <img style="width: 25px" src="https://static.vecteezy.com/system/resources/previews/009/266/327/original/plus-sign-icon-free-png.png" alt="" />
+              </button>
+            </div>
+          </div>
+          <div v-if="this.zobrazNapovedu === 1" class="kreslenie-center">
+            <div class="kreslenie">
+
+            </div>
           </div>
         </section>
       </div>
@@ -40,6 +73,7 @@
 import abeceda from '../abeceda.json'
 import jsPDF from "jspdf";
 import html2canvas from 'html2canvas';
+import {onMounted, reactive} from "vue";
 
 export default {
   name: "EditorOsemsmeroviekView",
@@ -52,7 +86,67 @@ export default {
       columns: 8,
       showGrid: false,
       grid: [],
+      typNapovedy: "",
+      zobrazNapovedu: 0,
+      lekcia: 0,
+      textField: 3,
     };
+  },
+  setup() {
+    const state = reactive({
+      todos: {}
+    })
+
+    function GetAll() {
+      fetch("http://localhost:3000/todos")
+          .then(res => res.json())
+          .then(data => {
+            state.todos = data
+          })
+    }
+
+    onMounted(() => {
+      GetAll()
+    })
+    return {state, GetAll}
+  },
+  computed: {
+    lekcie(){
+      let array = [];
+      for(let i = 0; i < this.state.todos.length; i ++){
+        const autor = this.state.todos[i].author;
+        let duplikat = false;
+        for (let j = 0; j < array.length; j++) {
+          if (array[j] === autor) {
+            duplikat = true;
+            break;
+          }
+        }
+        if(!duplikat){
+          array.push(autor);
+        }
+      }
+      return array;
+    },
+    plus(){
+      this.textField = this.textField +1;
+    },
+    minus(){
+      if(this.textField > 0) {
+        this.textField--;
+      }
+    },
+    zmenNapovedu(){
+      if(this.typNapovedy === "Kreslená nápoveda"){
+        this.zobrazNapovedu = 1;
+      }
+      if(this.typNapovedy === "Obrázková nápoveda"){
+        this.zobrazNapovedu = 2;
+      }
+      if(this.typNapovedy === "Písomná nápoveda"){
+        this.zobrazNapovedu = 3;
+      }
+    }
   },
   methods: {
     initializeGrid() {
@@ -297,6 +391,19 @@ export default {
   border: 1px solid #ccc;
   width: 100%;
   box-sizing: border-box;
+}
+
+.kreslenie {
+  width: 50%;
+  height: 600px;
+  background-color: white;
+}
+
+.kreslenie-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 </style>
 
