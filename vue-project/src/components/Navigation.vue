@@ -1,8 +1,7 @@
 <template>
   <nav class="navigation-container">
     <router-link to="/" class="navigation-button">Home</router-link>
-    <router-link to="/admin" class="navigation-button">Prihlásenie</router-link>
-    <router-link to="/registration" class="navigation-button">Registrácia</router-link>
+    <router-link to="/admin" class="navigation-button">Admin Rozhranie</router-link>
   </nav>
 </template>
 

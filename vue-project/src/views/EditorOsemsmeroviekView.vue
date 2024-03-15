@@ -1,12 +1,12 @@
 <template>
   <div class="velkost-container">
-    <label for="zadanaVelkost" class="input-label">Zvol velkost krizovky:</label>
-    <input type="number" v-model="columns" class="number-input">
-    <button @click="initializeGrid()" style="margin:10px; text-align: center" class="action-button">Potvrdit</button>
+    <label for="zadanaVelkost" class="input-label">Zvol veľkosť osemsmerovky:</label>
+    <input type="number" v-model="columns" class="number-input" :disabled="potvrdit">
+    <button @click="potvrd()" style="margin:10px; text-align: center" class="action-button">Potvrdit</button>
     <button @click="fillEmpty()" style="margin:10px; text-align: center" class="action-button">Vyplnit prazdne policka</button>
   </div>
 
-  <button style="float: right" class="action-button" v-if="showGrid" @click="exportToPDF">Uložiť</button>
+  <button style="float: right" class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
       <br>
       <div id="generovanaOsemsmerovka">
         <h1 v-if="showGrid" class="right-heading">Vygenerovaná osemsmerovka : </h1>
@@ -18,8 +18,8 @@
                     v-model="cell.value"
                     :placeholder="cell.placeholder"
                     class="crossword-input"
-                    @input="updateCell(rowIndex, colIndex)"
                     maxlength="1"
+                    :disabled="!potvrdit"
                 />
               </div>
             </div>
@@ -27,7 +27,7 @@
         </div>
         <section v-if="showGrid">
 
-          <div style="text-align: center">
+          <div id="skryt" style="text-align: center">
             <label>Typ napovedy: </label>
             <select @change="zmenNapovedu()" id="typNapovedy" v-model="typNapovedy">
               <option value="Kreslená nápoveda">Kreslená nápoveda</option>
@@ -35,7 +35,7 @@
               <option value="Písomná nápoveda">Písomná nápoveda</option>
             </select>
           </div>
-          <div v-if="this.zobrazNapovedu === 2" style="text-align: center">
+          <div id="skryt" v-if="this.zobrazNapovedu === 2" style="text-align: center">
             <label>Lekcia:</label>
             <select v-model="lekcia">
               <option v-for="item in lekcie" :key="item" :value="item">{{ item }}</option>
@@ -49,7 +49,7 @@
 
           <div style="text-align: center" v-if="zobrazNapovedu === 3" v-for="index in this.textField">
             <input type="text">
-            <div v-if="index === this.textField">
+            <div id="skryt" v-if="index === this.textField">
               <button @click="minus()">
                 <img style="width: 25px" src="https://static.vecteezy.com/system/resources/previews/009/267/401/original/minus-sign-icon-free-png.png" alt="" />
               </button>
@@ -79,6 +79,7 @@ export default {
   name: "EditorOsemsmeroviekView",
   data() {
     return {
+      potvrdit: false,
       characters: abeceda,
       enteredWord: "",
       disableButtons: false,
@@ -155,6 +156,16 @@ export default {
           Array.from({ length: this.columns }, () => ({ value: "", placeholder: "" }))
       );
     },
+    potvrditPredOpustenim(event) {
+      for (let i = 0; i < this.grid.length; i++) {
+        for (let j = 0; j < this.grid[i].length; j++) {
+          if (this.grid[i][j].value.trim() !== '') {
+            event.returnValue = 'Ste si istý, že chcete odísť? Všetky zmeny budú stratené.';
+            return;
+          }
+        }
+      }
+    },
     fillEmpty(){
       for(let i = 0; i < this.columns; i++){
         for(let j = 0; j < this.columns; j++){
@@ -164,6 +175,12 @@ export default {
           }
         }
       }
+    },
+    printPDF() {
+      window.print();
+    },
+    potvrd(){
+      this.potvrdit = true;
     },
     exportToPDF() {
       const pdf = new jsPDF({
@@ -185,9 +202,12 @@ export default {
         pdf.save("Osemsmerovka.pdf");
       });
     },
-    updateCell(rowIndex, colIndex) {
-      console.log(`Updated cell at row ${rowIndex}, column ${colIndex} with value: ${this.grid[rowIndex][colIndex].value}`);
-    },
+  },
+  mounted() {
+    window.addEventListener('beforeunload', this.potvrditPredOpustenim);
+  },
+  beforeUnmount() {
+    window.removeEventListener('beforeunload', this.potvrditPredOpustenim);
   },
   watch: {
     columns: {
@@ -330,9 +350,10 @@ export default {
   width: 40px;
 }
 
-.crossword-input {
+.crossword-input, .crossword-input::placeholder {
   width: 100%;
   height: 100%;
+  color: black;
   border: none;
   text-align: center;
   font-size: 14px;
@@ -404,6 +425,21 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
+}
+
+@media print {
+  .velkost-container,
+  .action-button{
+    display: none;
+  }
+
+  #skryt{
+    display: none;
+  }
+
+  .crossword-input {
+    font-size: 18px;
+  }
 }
 </style>
 

@@ -1,74 +1,156 @@
 <template>
-  <body>
-  <h1>Vytvorenie krížovky</h1>
   <div class="velkost-container">
-    <label for="zadanaVelkost" class="input-label">Zvol velkost krizovky:</label>
-    <input type="number" v-model="columns" class="number-input">
-    <button @click="initializeGrid()" style="margin:10px; text-align: center" class="action-button">Potvrdit</button>
+    <label for="zadanaVelkost" class="input-label">Zvol veľkost krížovky:</label>
+    <input type="number" v-model="columns" class="number-input" :disabled="potvrdit">
+    <button @click="potvrd()" style="margin:10px; text-align: center" class="action-button">Potvrdit</button>
   </div>
-
-  <div class="error-message" v-if="showError">
-    <p>{{ errorMessage }}</p>
+  <p style="text-align: center">Hľadaná odpoveď:</p>
+  <div style="display: flex; justify-content: center">
+    <input style="width: 30%;" class="number-input" type="text">
   </div>
-  <div class="generovana-krizovka" v-if="showGrid" @keydown.arrow-left="moveLeft" @keydown.arrow-right="moveRight" @keydown.arrow-up="moveUp" @keydown.arrow-down="moveDown">
-    <div class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
-      <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
-        <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell">
-          <input
-              v-model="cell.value"
-              :placeholder="cell.placeholder"
-              class="crossword-input"
-              @input="updateCell(rowIndex, colIndex)"
-              maxlength="1"
-              @keydown.enter="$event.target.blur()"
-              @keydown.tab="moveNext"
-              :tabindex="rowIndex * columns + colIndex"
-          />
+  <button style="float: right" class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
+  <br>
+  <div id="generovanaOsemsmerovka">
+    <h1 v-if="showGrid" class="right-heading">Vygenerovaná krížovka : </h1>
+    <div class="crossword-container">
+      <div v-if="showGrid" class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
+        <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
+          <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell">
+            <input
+                v-model="cell.value"
+                :placeholder="cell.placeholder"
+                class="crossword-input"
+                :class="{ 'naplnene': cell.value, 'prazdne': !cell.value}"
+                maxlength="1"
+                :disabled="!potvrdit"
+            />
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div style="text-align: center" v-for="(napoveda, index) in ocislovaneNapovedy" :key="index">
-    <p>{{napoveda.plac}}.  {{napoveda.napoveda}}</p>
+    <section v-if="showGrid">
+
+      <div id="skryt" style="text-align: center">
+        <label>Typ napovedy: </label>
+        <select @change="zmenNapovedu()" id="typNapovedy" v-model="typNapovedy">
+          <option value="Kreslená nápoveda">Kreslená nápoveda</option>
+          <option value="Obrázková nápoveda">Obrázková nápoveda</option>
+          <option value="Písomná nápoveda">Písomná nápoveda</option>
+        </select>
+      </div>
+      <div id="skryt" v-if="this.zobrazNapovedu === 2" style="text-align: center">
+        <label>Lekcia:</label>
+        <select v-model="lekcia">
+          <option v-for="item in lekcie" :key="item" :value="item">{{ item }}</option>
+        </select>
+      </div>
+      <h1 class="hladaneSlova">Nápoveda</h1>
+
+      <div v-if="this.zobrazNapovedu === 2" style="text-align: center" class="obrazky" v-for="item in state.todos" :key="item.author">
+        <img v-if="item.author === this.lekcia" style="width: 250px" :src="item.todo" alt="">
+      </div>
+
+      <div style="text-align: center" v-if="zobrazNapovedu === 3" v-for="index in this.textField">
+        <input type="text">
+        <div id="skryt" v-if="index === this.textField">
+          <button @click="minus()">
+            <img style="width: 25px" src="https://static.vecteezy.com/system/resources/previews/009/267/401/original/minus-sign-icon-free-png.png" alt="" />
+          </button>
+          <button @click="plus()">
+            <img style="width: 25px" src="https://static.vecteezy.com/system/resources/previews/009/266/327/original/plus-sign-icon-free-png.png" alt="" />
+          </button>
+        </div>
+      </div>
+      <div v-if="this.zobrazNapovedu === 1" class="kreslenie-center">
+        <div class="kreslenie">
+
+        </div>
+      </div>
+    </section>
   </div>
 
-  <div>
-    <input v-model="txtOdpovede[0]" class="odpovede" placeholder="Zadaj nápovedu">
-    <button @click="addTextField" class="action-button">Pridať textové pole</button>
-    <div v-for="(index) in pridaneTxt" :key="index">
-      <input v-model="txtOdpovede[index]" class="" placeholder="Zadaj odpoved">
-    </div>
-  </div>
 
-  </body>
 </template>
 
-
 <script>
+import abeceda from '../abeceda.json'
+import jsPDF from "jspdf";
+import html2canvas from 'html2canvas';
+import {onMounted, reactive} from "vue";
+
 export default {
   name: "EditorKrizovkyView",
   data() {
     return {
-      vyberanieOdpovedi : false,
+      potvrdit: false,
+      characters: abeceda,
+      enteredWord: "",
+      disableButtons: false,
       enteredWords: [],
-      enteredWord : '',
-      napoveda : '',
-      napovedy: [],
-      columns: 0,
-      grid: [],
+      columns: 8,
       showGrid: false,
-      errorMessage: '',
-      showError: false,
-      vysledokKrizovky: '',
-      ocislovaneNapovedy: [],
-      placed: 0,
-      odpoved: 0,
-      hidden: false,
-      zobrazitNapovedu: false,
-      velkost : 0,
-      txtOdpovede: [''],
-      pridaneTxt: []
+      grid: [],
+      typNapovedy: "",
+      zobrazNapovedu: 0,
+      lekcia: 0,
+      textField: 3,
     };
+  },
+  setup() {
+    const state = reactive({
+      todos: {}
+    })
+
+    function GetAll() {
+      fetch("http://localhost:3000/todos")
+          .then(res => res.json())
+          .then(data => {
+            state.todos = data
+          })
+    }
+
+    onMounted(() => {
+      GetAll()
+    })
+    return {state, GetAll}
+  },
+  computed: {
+    lekcie(){
+      let array = [];
+      for(let i = 0; i < this.state.todos.length; i ++){
+        const autor = this.state.todos[i].author;
+        let duplikat = false;
+        for (let j = 0; j < array.length; j++) {
+          if (array[j] === autor) {
+            duplikat = true;
+            break;
+          }
+        }
+        if(!duplikat){
+          array.push(autor);
+        }
+      }
+      return array;
+    },
+    plus(){
+      this.textField = this.textField +1;
+    },
+    minus(){
+      if(this.textField > 0) {
+        this.textField--;
+      }
+    },
+    zmenNapovedu(){
+      if(this.typNapovedy === "Kreslená nápoveda"){
+        this.zobrazNapovedu = 1;
+      }
+      if(this.typNapovedy === "Obrázková nápoveda"){
+        this.zobrazNapovedu = 2;
+      }
+      if(this.typNapovedy === "Písomná nápoveda"){
+        this.zobrazNapovedu = 3;
+      }
+    }
   },
   methods: {
     initializeGrid() {
@@ -77,144 +159,174 @@ export default {
           Array.from({ length: this.columns }, () => ({ value: "", placeholder: "" }))
       );
     },
-    vytlacit(){
-      this.hidden = !this.hidden;
-    },
-    showNapoveda(){
-      this.zobrazitNapovedu = !this.zobrazitNapovedu;
-    },
-    moveUp(event) {
-      const currentIndex = event.target.tabIndex;
-      if (currentIndex % this.columns === 0) {
-        event.preventDefault();
-      } else {
-        this.setFocus(currentIndex - 1);
+    potvrditPredOpustenim(event) {
+      for (let i = 0; i < this.grid.length; i++) {
+        for (let j = 0; j < this.grid[i].length; j++) {
+          if (this.grid[i][j].value.trim() !== '') {
+            event.returnValue = 'Ste si istý, že chcete odísť? Všetky zmeny budú stratené.';
+            return;
+          }
+        }
       }
     },
-    moveDown(event) {
-      const currentIndex = event.target.tabIndex;
-      if ((currentIndex + 1) % this.columns === 0 || currentIndex === this.grid.length * this.columns - 1) {
-        event.preventDefault();
-      } else {
-        this.setFocus(currentIndex + 1);
-      }
+    printPDF() {
+      window.print();
     },
-    moveLeft(event) {
-      const currentIndex = event.target.tabIndex;
-      if (currentIndex < this.columns) {
-        event.preventDefault();
-      } else {
-        this.setFocus(currentIndex - this.columns);
-      }
+    potvrd(){
+      this.potvrdit = true;
     },
-    moveRight(event) {
-      const currentIndex = event.target.tabIndex;
-      if (currentIndex >= this.grid.length * this.columns - this.columns) {
-        event.preventDefault();
-      } else {
-        this.setFocus(currentIndex + this.columns);
-      }
-    },
-    setFocus(index) {
-      const targetInput = document.querySelector(`input[tabindex="${index}"]`);
-      targetInput.focus();
-    },
-    addTextField() {
-      this.pridaneTxt.push('');
+    exportToPDF() {
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "pt",
+        format: [792, 800]
+      });
+
+      const content = document.getElementById("generovanaOsemsmerovka");
+
+      html2canvas(content, {
+        scale: 1
+      }).then(canvas => {
+        const imgData = canvas.toDataURL("image/jpeg", 1.0);
+        const imgWidth = 792;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
+        pdf.save("Osemsmerovka.pdf");
+      });
     },
   },
-  computed: {
-    getVysledokKrizovky(){
-      return this.vysledokKrizovky;
-    },
-    napovedaText(){
-      if(this.zobrazitNapovedu){
-        return "Skryť návod";
-      }
-      return "Zobraziť návod";
-    },
+  mounted() {
+    window.addEventListener('beforeunload', this.potvrditPredOpustenim);
+  },
+  beforeUnmount() {
+    window.removeEventListener('beforeunload', this.potvrditPredOpustenim);
+  },
+  watch: {
+    columns: {
+      handler(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.initializeGrid();
+        }
+      },
+      immediate: true
+    }
   },
 };
 </script>
 
+
+
 <style scoped>
+.entered-words {
+  margin-top: 20px;
+}
 
+.entered-words p {
+  margin: 5px 0;
+  color: #007BFF;
+  font-weight: bold;
+}
 
-h1{
+.container {
+  display: flex;
+  height: 100vh;
+  background-color: #1b1b1c;
+}
+
+.h1 {
   text-align: center;
   color: orangered;
-  margin: 10px;
 }
 
-
-.generovana-krizovka{
-  display: flex;
-  justify-content: center;
-  margin: 10px;
-}
-
-.crossword-input {
-  width: 100%;
-  height: 100%;
-  border: none;
+.hladaneSlova {
   text-align: center;
-  font-size: 14px;
-  font-weight: bold;
-  outline: none;
+  color: orange;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.half {
+  flex: 1;
+  box-sizing: border-box;
+  padding: 20px;
 }
 
 .input {
   text-align: center;
 }
 
-.action-button {
-  padding: 10px 20px;
-  background-color: dodgerblue;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.right {
+  background-color: #ffffff;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .text-field {
   width: 300px;
   padding: 10px;
-  margin: 10px;
-  border: 1px solid white;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.error-message {
-  background-color: mistyrose;
-  color: firebrick;
-  padding: 10px;
-  border-radius: 5px;
-  margin-top: 10px;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.button-generate {
+.action-button {
   padding: 10px 20px;
-  background-color: dodgerblue;
+  background-color: #007BFF;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.button-generate {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 25px;
   transition: background-color 0.3s ease;
 }
 
 .button-generate:hover {
-  background-color: darkblue;
+  background-color: #0056b3;
 }
 
 .action-button:hover {
-  background-color: darkblue;
+  background-color: #0056b3;
 }
 
+.divider {
+  width: 1px;
+  background-color: #ccc;
+  height: 100%;
+  margin: 0 10px;
+}
+
+.crossword-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.crossword-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  width: fit-content;
+  background-color: #eee;
+  border: 2px solid black;
+  border-radius: 5px;
+}
 
 .crossword-row {
   display: flex;
@@ -231,89 +343,48 @@ h1{
   width: 40px;
 }
 
-.crossword-grid {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 1px;
-  width: fit-content;
-  background-color: white;
-  border: 2px solid black;
-  border-radius: 5px;
-}
-
-.slova-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.riadok {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.entered-word,
-.napoveda {
-  padding: 10px;
-  margin-right: 10px;
-}
-
-.entered-word {
-  color: orangered;
-}
-
-.napoveda {
-  color: orange;
-}
-
-.container {
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.delete-button{
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-.prazdne {
-  background-color: white;
-}
-
-.naplnene {
-  background-color: lightgray;
-}
-
-.empty{
-  visibility: hidden;
-}
-
-.odpoved{
-  background-color: orange;
-}
-
-.hidden{
-  font-size: 0;
-}
-
-body{
-  background-color: #1b1b1c;
-}
-
-.how-to{
-  margin: 5px;
-  background-color: deepskyblue;
-  text-align: center;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-  border-radius: 5px;
+.crossword-input, .crossword-input::placeholder {
+  width: 100%;
+  height: 100%;
   color: black;
+  border: none;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  outline: none;
+}
+
+.right-heading{
+  color: orange;
+  text-align: center;
+  margin-left: 60px;
+  margin-bottom: 20px;
+}
+
+.words {
+  margin-left: 20px;
+  color: #333;
+  font-size: 18px;
+  text-align: left;
+  display: inline-block;
+  font-family: Georgia;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 5px;
+}
+
+
+.error-message {
+  background: red;
+  padding: 10px;
+  color: white;
+  border-radius: 10px;
+  position: relative;
+  display: inline-block;
+  box-shadow: 1px 1px 1px 1px #aaaaaa;
+  margin-top: 10px;
 }
 
 .velkost-container {
@@ -336,4 +407,32 @@ body{
   box-sizing: border-box;
 }
 
+.kreslenie {
+  width: 50%;
+  height: 600px;
+  background-color: white;
+}
+
+.kreslenie-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+@media print {
+  .velkost-container,
+  .action-button{
+    display: none;
+  }
+
+  #skryt{
+    display: none;
+  }
+
+  .crossword-input {
+    font-size: 18px;
+  }
+}
 </style>
+
