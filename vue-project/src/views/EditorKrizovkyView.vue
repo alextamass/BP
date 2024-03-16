@@ -8,8 +8,13 @@
   <div style="display: flex; justify-content: center">
     <input style="width: 30%;" class="number-input" type="text">
   </div>
-  <button style="float: right" class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
-  <br>
+  <div style="text-align: center">
+    <button v-if="vyberanieOdpovedi === false" @click="vybratOdpoved()" class="action-button">Vybrat odpoved</button>
+    <button v-if="vyberanieOdpovedi" @click="vybratOdpoved()" class="action-button">Ukoncit vyber</button>
+  </div>
+    <button style="float: right" class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
+
+    <br>
   <div id="generovanaOsemsmerovka">
     <h1 v-if="showGrid" class="right-heading">Vygenerovaná krížovka : </h1>
     <div class="crossword-container">
@@ -20,9 +25,11 @@
                 v-model="cell.value"
                 :placeholder="cell.placeholder"
                 class="crossword-input"
-                :class="{ 'naplnene': cell.value, 'prazdne': !cell.value}"
+                :class="{ 'naplnene': cell.value && !cell.odpoved, 'oznacit': cell.odpoved}"
                 maxlength="1"
                 :disabled="!potvrdit"
+
+                @click="oznacitOdpoved(cell)"
             />
           </div>
         </div>
@@ -94,6 +101,7 @@ export default {
       zobrazNapovedu: 0,
       lekcia: 0,
       textField: 3,
+      vyberanieOdpovedi: false,
     };
   },
   setup() {
@@ -153,10 +161,18 @@ export default {
     }
   },
   methods: {
+    vybratOdpoved(){
+      this.vyberanieOdpovedi = !this.vyberanieOdpovedi;
+    },
+    oznacitOdpoved(bunka){
+      if (this.vyberanieOdpovedi) {
+        bunka.odpoved = !bunka.odpoved;
+      }
+    },
     initializeGrid() {
       this.showGrid = true;
       this.grid = Array.from({ length: this.columns }, () =>
-          Array.from({ length: this.columns }, () => ({ value: "", placeholder: "" }))
+          Array.from({ length: this.columns }, () => ({ value: "", placeholder: "", odpoved: false }))
       );
     },
     potvrditPredOpustenim(event) {
@@ -420,6 +436,21 @@ export default {
   height: 100vh;
 }
 
+.oznacit {
+  background-color: yellow;
+  border: 1px solid black;
+}
+
+.prazdne {
+  background-color: white;
+}
+
+.naplnene {
+  background-color: lightgray;
+  border: 1px solid black;
+
+}
+
 @media print {
   .velkost-container,
   .action-button{
@@ -430,9 +461,15 @@ export default {
     display: none;
   }
 
-  .crossword-input {
-    font-size: 18px;
+  .crossword-cell  {
+    border: none;
   }
+
+  .crossword-input {
+    font-size: 0px;
+  }
+
+
 }
 </style>
 
