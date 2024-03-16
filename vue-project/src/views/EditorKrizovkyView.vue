@@ -4,10 +4,7 @@
     <input type="number" v-model="columns" class="number-input" :disabled="potvrdit">
     <button @click="potvrd()" style="margin:10px; text-align: center" class="action-button">Potvrdit</button>
   </div>
-  <p style="text-align: center">Hľadaná odpoveď:</p>
-  <div style="display: flex; justify-content: center">
-    <input style="width: 30%;" class="number-input" type="text">
-  </div>
+
   <div style="text-align: center">
     <button v-if="vyberanieOdpovedi === false" @click="vybratOdpoved()" class="action-button">Vybrat odpoved</button>
     <button v-if="vyberanieOdpovedi" @click="vybratOdpoved()" class="action-button">Ukoncit vyber</button>
@@ -25,10 +22,9 @@
                 v-model="cell.value"
                 :placeholder="cell.placeholder"
                 class="crossword-input"
-                :class="{ 'naplnene': cell.value && !cell.odpoved, 'oznacit': cell.odpoved}"
+                :class="{ 'naplnene': cell.value && !cell.odpoved, 'oznacit': cell.odpoved, 'hidden' : this.hidden && rowIndex !== 0 && colIndex !== 0}"
                 maxlength="1"
                 :disabled="!potvrdit"
-
                 @click="oznacitOdpoved(cell)"
             />
           </div>
@@ -89,6 +85,7 @@ export default {
   name: "EditorKrizovkyView",
   data() {
     return {
+      hidden: false,
       potvrdit: false,
       characters: abeceda,
       enteredWord: "",
@@ -186,7 +183,13 @@ export default {
       }
     },
     printPDF() {
-      window.print();
+      this.hidden = true;
+      setTimeout(() => {
+        this.$nextTick(() => {
+          window.print();
+          this.hidden = false;
+        });
+      }, 1000);
     },
     potvrd(){
       this.potvrdit = true;
@@ -448,8 +451,12 @@ export default {
 .naplnene {
   background-color: lightgray;
   border: 1px solid black;
-
 }
+
+.hidden{
+  font-size: 0;
+}
+
 
 @media print {
   .velkost-container,
@@ -465,9 +472,6 @@ export default {
     border: none;
   }
 
-  .crossword-input {
-    font-size: 0px;
-  }
 
 
 }
