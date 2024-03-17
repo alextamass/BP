@@ -81,7 +81,7 @@
     <div v-for="item in state.todos" :key="item._id" class="polozka">
       <p class="nazov-lekcie">Lekcia: {{ item.author }}</p>
       <img class="obrazok" :src="item.todo" alt="">
-      <button class="tlacidlo-vymazat" @click="vymaz(item._id)">Vymazať úlohu</button>
+      <button class="tlacidlo-vymazat" @click="vymaz(item._id)">Vymazať</button>
     </div>
   </div>
   <div v-if="prihlaseny === true && this.nahrat === true">

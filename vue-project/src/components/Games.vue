@@ -23,8 +23,8 @@ export default {
         { url: 'https://img.grada.cz/_t_/media/sprinx.bookimages/138449_Kniha_obrazkove_krizovky_pro_deti_Kneblova_Grada_600_0_fit.jpg', name: 'Generátor Krížoviek', path: "Krizovka" },
         { url: 'https://www.vydarkus.eu/images/stories/virtuemart/product//obal5284.jpg', name : 'Vytvoriť doplnovačku', path: 'Doplnovacka'},
         { url: 'https://zvedavedeti.sk/wp-content/uploads/2021/09/kolaz-vytvor-si-svet-zvierat.jpg', name : 'Vytvoriť spájačku', path: 'Spajacka'},
-        { url: 'https://zvedavedeti.sk/wp-content/uploads/2021/09/kolaz-vytvor-si-svet-zvierat.jpg', name : 'Editor Krížoviek', path: 'EditKrizovka'},
-        { url: 'https://www.studentskycasopis.sk/studentskycasopis.php?action=show_img&id=2270', name : 'Editor Osemsmeroviek', path: 'EditOsemsmerovka'},
+        { url: 'https://2020.sifrovacka.sk/static/puzzles/1_2_tajnicka.q7XFb38OmkUbVOyVVM12AE6tWx9VT-RYaQXbT875wZs.ok.png', name : 'Editor Krížoviek', path: 'EditKrizovka'},
+        { url: 'https://www.superko.sk/fotky2176/blog/1681898812.png', name : 'Editor Osemsmeroviek', path: 'EditOsemsmerovka'},
 
       ],
     };

@@ -13,7 +13,7 @@
 
     <br>
   <div id="generovanaOsemsmerovka">
-    <h1 v-if="showGrid" class="right-heading">Vygenerovaná krížovka : </h1>
+    <h1 v-if="showGrid" class="right-heading">Vytvorená krížovka : </h1>
     <div class="crossword-container">
       <div v-if="showGrid" class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
         <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
@@ -49,9 +49,13 @@
       </div>
       <h1 class="hladaneSlova">Nápoveda</h1>
 
-      <div v-if="this.zobrazNapovedu === 2" style="text-align: center" class="obrazky" v-for="item in state.todos" :key="item.author">
-        <img v-if="item.author === this.lekcia" style="width: 250px" :src="item.todo" alt="">
+      <div v-if="this.zobrazNapovedu === 2" style="text-align: center" class="obrazky" v-for="(item, index) in polozky" :key="index">
+        <div style="display: flex; flex-direction: column; align-items: center;">
+          <img v-if="item.author === this.lekcia" style="width: 250px" :src="item.todo" alt="">
+          <input style="width: 13%; text-align: center" class="number-input" type="number">
+        </div>
       </div>
+
 
       <div style="text-align: center" v-if="zobrazNapovedu === 3" v-for="index in this.textField">
         <input type="text">
@@ -120,6 +124,9 @@ export default {
     return {state, GetAll}
   },
   computed: {
+    polozky() {
+      return this.state.todos.filter(item => item.author === this.lekcia);
+    },
     lekcie(){
       let array = [];
       for(let i = 0; i < this.state.todos.length; i ++){

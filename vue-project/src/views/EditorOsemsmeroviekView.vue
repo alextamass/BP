@@ -9,7 +9,7 @@
   <button style="float: right" class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
       <br>
       <div id="generovanaOsemsmerovka">
-        <h1 v-if="showGrid" class="right-heading">Vygenerovaná osemsmerovka : </h1>
+        <h1 v-if="showGrid" class="right-heading">Vytvorená osemsmerovka : </h1>
         <div class="crossword-container">
           <div v-if="showGrid" class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
             <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">

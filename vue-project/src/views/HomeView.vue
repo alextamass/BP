@@ -1,9 +1,10 @@
 <template>
   <div class="bg">
     <div>
-      <h2 class="home-heading">Bakalárska práca Alex Tamáš</h2>
+<!--      <h2 class="home-heading">Bakalárska práca Alex Tamáš</h2>-->
       <p class="home-paragraph">
-        Vítam Vás na mojej stránke. V nasledujúcej sekcii si môžete vybrať typ krížovky, ktorý chcete vytvoriť.
+        <br>
+<!--        Vítam Vás na mojej stránke. V nasledujúcej sekcii si môžete vybrať typ krížovky, ktorý chcete vytvoriť.-->
       </p>
     </div>
     <Games/>
