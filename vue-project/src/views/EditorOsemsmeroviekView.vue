@@ -1,6 +1,6 @@
 <template>
   <div class="velkost-container">
-    <label for="zadanaVelkost" class="input-label">Zvol veľkosť osemsmerovky:</label>
+    <label for="zadanaVelkost" class="input-label">Zvoľ veľkosť osemsmerovky:</label>
     <input type="number" v-model="columns" class="number-input" :disabled="potvrdit">
     <button @click="potvrd()" style="margin:10px; text-align: center" class="action-button">Potvrdit</button>
     <button @click="fillEmpty()" style="margin:10px; text-align: center" class="action-button">Vyplnit prazdne policka</button>
@@ -439,6 +439,12 @@ export default {
 
   .crossword-input {
     font-size: 18px;
+    font-style: normal;
+  }
+  .crossword-input::placeholder {
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: bold;
   }
 }
 </style>

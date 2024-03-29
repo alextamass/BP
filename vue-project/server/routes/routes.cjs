@@ -26,6 +26,7 @@ router.post('/new', async (req,res) =>{
     res.json(savedTodo);
 })
 
+
 //getter podla id
 router.get('/get/:id', async (req,res) =>{
     const t = await Todo.findById({_id : req.params.id});
@@ -49,6 +50,7 @@ router.put('/update/:id', async (req,res) =>{
     );
     res.json(tUpdate);
 })
+
 
 
 

@@ -6,7 +6,7 @@
   </div>
 
   <div style="text-align: center">
-    <button v-if="vyberanieOdpovedi === false" @click="vybratOdpoved()" class="action-button">Vybrat odpoved</button>
+    <button v-if="vyberanieOdpovedi === false" @click="vybratOdpoved()" class="action-button">Vybrať odpoveď</button>
     <button v-if="vyberanieOdpovedi" @click="vybratOdpoved()" class="action-button">Ukoncit vyber</button>
   </div>
     <button style="float: right" class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
