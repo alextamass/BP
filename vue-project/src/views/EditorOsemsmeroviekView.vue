@@ -3,7 +3,7 @@
     <label for="zadanaVelkost" class="input-label">Zvoľ veľkosť osemsmerovky:</label>
     <input type="number" v-model="columns" class="number-input" :disabled="potvrdit">
     <button @click="potvrd()" style="margin:10px; text-align: center" class="action-button">Potvrdit</button>
-    <button @click="fillEmpty()" style="margin:10px; text-align: center" class="action-button">Vyplnit prazdne policka</button>
+    <button @click="fillEmpty()" style="margin:10px; text-align: center" class="action-button">Vyplniť prázdne políčka</button>
   </div>
 
   <button style="float: right" class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
