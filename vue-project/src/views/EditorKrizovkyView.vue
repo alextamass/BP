@@ -12,7 +12,6 @@
   <div class="tlacitka">
     <button id="buttons"  class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
     <button id="buttons"  class="action-button" @click="ulozit()">Uložiť</button>
-    <button id="buttons"  class="action-button" @click="vyplnit()">vyplnit</button>
     <input  id="buttons" type="file"  class="action-button" @change="nahrat">
   </div>
   <br>
@@ -149,14 +148,8 @@ export default {
       }
       return array;
     },
-    plus(){
-      this.textField = this.textField +1;
-    },
-    minus(){
-      if(this.textField > 0) {
-        this.textField--;
-      }
-    },
+  },
+  methods: {
     zmenNapovedu(){
       if(this.typNapovedy === "Kreslená nápoveda"){
         this.zobrazNapovedu = 1;
@@ -167,9 +160,15 @@ export default {
       if(this.typNapovedy === "Písomná nápoveda"){
         this.zobrazNapovedu = 3;
       }
-    }
-  },
-  methods: {
+    },
+    plus(){
+      this.textField = this.textField +1;
+    },
+    minus(){
+      if(this.textField > 0) {
+        this.textField--;
+      }
+    },
     vybratOdpoved(){
       this.vyberanieOdpovedi = !this.vyberanieOdpovedi;
     },

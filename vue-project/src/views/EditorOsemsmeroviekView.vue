@@ -6,8 +6,11 @@
     <button @click="fillEmpty()" style="margin:10px; text-align: center" class="action-button">Vyplniť prázdne políčka</button>
   </div>
 
-  <button style="float: right" class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
-  <button style="float: right" class="action-button" @click="ulozit()">Uložiť</button>
+  <div class="tlacitka">
+    <button id="buttons"  class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
+    <button id="buttons"  class="action-button" @click="ulozit()">Uložiť</button>
+    <input  id="buttons" type="file"  class="action-button" @change="nahrat">
+  </div>
   <br>
       <div id="generovanaOsemsmerovka">
         <h1 v-if="showGrid" class="right-heading">Vytvorená osemsmerovka : </h1>
@@ -49,7 +52,7 @@
           </div>
 
           <div style="text-align: center" v-if="zobrazNapovedu === 3" v-for="index in this.textField">
-            <input type="text">
+            <input type="text" v-model="textFieldValues[index]">
             <div id="skryt" v-if="index === this.textField">
               <button @click="minus()">
                 <img style="width: 25px" src="https://static.vecteezy.com/system/resources/previews/009/267/401/original/minus-sign-icon-free-png.png" alt="" />
@@ -92,6 +95,7 @@ export default {
       zobrazNapovedu: 0,
       lekcia: 0,
       textField: 3,
+      textFieldValues: [],
     };
   },
   setup() {
@@ -129,7 +133,9 @@ export default {
         }
       }
       return array;
-    },
+    }
+  },
+  methods: {
     plus(){
       this.textField = this.textField +1;
     },
@@ -148,9 +154,7 @@ export default {
       if(this.typNapovedy === "Písomná nápoveda"){
         this.zobrazNapovedu = 3;
       }
-    }
-  },
-  methods: {
+    },
     initializeGrid() {
       this.showGrid = true;
       this.grid = Array.from({ length: this.columns }, () =>
@@ -184,9 +188,16 @@ export default {
       let content = this.columns +  "\n";
       for (let i = 0; i < this.columns; i++) {
         for (let j = 0; j < this.columns; j++) {
-          content += this.grid[j][i].value || this.grid[j][i].placeholder || " ";
+            content += this.grid[j][i].value || this.grid[j][i].placeholder || " ";
         }
         content += "\n";
+      }
+      content += "#\n" + this.zobrazNapovedu + '\n';
+      if(this.zobrazNapovedu === 3){
+        content += this.textField + '\n';
+        for(let i = 1; i <= this.textField; i++){
+          content += this.textFieldValues[i] + '\n';
+        }
       }
 
       const fullContent = content;
@@ -200,6 +211,61 @@ export default {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
+    },
+    nahrat(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target.result;
+        this.vyplnit(content);
+      };
+      reader.readAsText(file);
+    },
+    async vyplnit(content){
+      let lines = content.split('\n');
+      let size = parseInt(lines[0]);
+      lines.splice(0,1);
+      this.columns = size;
+      this.potvrdit = true;
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      this.grid = Array.from({ length: this.columns }, () =>
+          Array.from({ length: this.columns }, () => ({ value: "", placeholder: "", odpoved: false }))
+      );
+      for(let i = 0; i < this.columns; i++){
+        var line = lines[i];
+        for(let j = 0; j < this.columns; j++){
+          if(line[j] === " ") continue;
+          if(line[j] === "@"){
+            this.grid[j][i].value = line[j+1];
+            console.log(line);
+            line = line.replace(/@/g, "");
+            console.log(line);
+            this.grid[j][i].odpoved = true;
+          }
+          else{
+            this.grid[j][i].value = line[j];
+          }
+        }
+      }
+      var index = content.indexOf('#');
+      var odpoved = content.substring(index+2);
+      var odpoved = odpoved.split('\n');
+      var typOdpovedi = parseInt(odpoved[0]);
+      console.log(typOdpovedi)
+      this.zobrazNapovedu = typOdpovedi;
+      if(typOdpovedi === 3){
+        this.typNapovedy = "Písomná nápoveda";
+        var pocetTextField = parseInt(odpoved[1]);
+        odpoved.splice(0, 1);
+        this.textField = pocetTextField;
+        for(let i = 1; i < odpoved.length; i++){
+          this.textFieldValues[i] = odpoved[i];
+        }
+      }
+
     },
     potvrd(){
       this.potvrdit = true;
@@ -425,6 +491,12 @@ export default {
 .input-label {
   font-size: 18px;
   margin-bottom: 10px;
+}
+
+.tlacitka {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .number-input {
