@@ -25,7 +25,6 @@ export default {
         { url: 'https://zvedavedeti.sk/wp-content/uploads/2021/09/kolaz-vytvor-si-svet-zvierat.jpg', name : 'Vytvoriť spájačku', path: 'Spajacka'},
         { url: 'https://2020.sifrovacka.sk/static/puzzles/1_2_tajnicka.q7XFb38OmkUbVOyVVM12AE6tWx9VT-RYaQXbT875wZs.ok.png', name : 'Editor Krížoviek', path: 'EditKrizovka'},
         { url: 'https://www.superko.sk/fotky2176/blog/1681898812.png', name : 'Editor Osemsmeroviek', path: 'EditOsemsmerovka'},
-
       ],
     };
   },
@@ -40,7 +39,7 @@ export default {
 }
 
 .game-item {
-  width: 27%;
+  width: calc(33.33% - 20px);
   box-sizing: border-box;
   padding: 10px;
   margin-top: 10px;
@@ -59,6 +58,7 @@ export default {
 .image-container img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
   transition: transform 0.3s ease;
 }
 
@@ -83,9 +83,18 @@ export default {
   text-decoration: none;
   border-radius: 5px;
   transition: background-color 0.3s ease;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .router-link-button:hover {
   background-color: #0056b3;
+}
+
+@media (max-width: 768px) {
+  .game-item {
+    width: calc(50% - 20px);
+  }
 }
 </style>

@@ -2,18 +2,22 @@
   <div class="velkost-container">
     <label for="zadanaVelkost" class="input-label">Zvol veľkost krížovky:</label>
     <input type="number" v-model="columns" class="number-input" :disabled="potvrdit">
-    <button @click="potvrd()" style="margin:10px; text-align: center" class="action-button">Potvrdit</button>
+    <button @click="potvrd()" style="margin:10px; text-align: center" class="action-button">Potvrdiť</button>
   </div>
 
   <div style="text-align: center">
     <button v-if="vyberanieOdpovedi === false" @click="vybratOdpoved()" class="action-button">Vybrať odpoveď</button>
-    <button v-if="vyberanieOdpovedi" @click="vybratOdpoved()" class="action-button">Ukoncit vyber</button>
+    <button v-if="vyberanieOdpovedi" @click="vybratOdpoved()" class="action-button">Ukončiť výber</button>
   </div>
-    <button style="float: right" class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
-
-    <br>
+  <div class="tlacitka">
+    <button id="buttons"  class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
+    <button id="buttons"  class="action-button" @click="ulozit()">Uložiť</button>
+    <button id="buttons"  class="action-button" @click="vyplnit()">vyplnit</button>
+    <input  id="buttons" type="file"  class="action-button" @change="nahrat">
+  </div>
+  <br>
   <div id="generovanaOsemsmerovka">
-    <h1 v-if="showGrid" class="right-heading">Vytvorená krížovka : </h1>
+    <h1 style="text-align: center" v-if="showGrid" class="right-heading">Vytvorená krížovka : </h1>
     <div class="crossword-container">
       <div v-if="showGrid" class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
         <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
@@ -58,7 +62,7 @@
 
 
       <div style="text-align: center" v-if="zobrazNapovedu === 3" v-for="index in this.textField">
-        <input type="text">
+        <input type="text" v-model="textFieldValues[index]">
         <div id="skryt" v-if="index === this.textField">
           <button @click="minus()">
             <img style="width: 25px" src="https://static.vecteezy.com/system/resources/previews/009/267/401/original/minus-sign-icon-free-png.png" alt="" />
@@ -103,6 +107,7 @@ export default {
       lekcia: 0,
       textField: 3,
       vyberanieOdpovedi: false,
+      textFieldValues: [],
     };
   },
   setup() {
@@ -200,6 +205,93 @@ export default {
     },
     potvrd(){
       this.potvrdit = true;
+    },
+    ulozit() {
+      let content = this.columns +  "\n";
+      for (let i = 0; i < this.columns; i++) {
+        for (let j = 0; j < this.columns; j++) {
+          if (this.grid[j][i].odpoved) {
+            content += "@" + this.grid[j][i].value;
+          } else {
+            content += this.grid[j][i].value || " ";
+          }
+        }
+        content += "\n";
+      }
+      content += "#\n" + this.zobrazNapovedu + '\n';
+      if(this.zobrazNapovedu === 3){
+        content += this.textField + '\n';
+        for(let i = 1; i <= this.textField; i++){
+          content += this.textFieldValues[i] + '\n';
+        }
+      }
+
+      const fullContent = content;
+      const blob = new Blob([fullContent], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Krizovka.txt');
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    },
+    nahrat(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target.result;
+        this.vyplnit(content);
+      };
+      reader.readAsText(file);
+    },
+    async vyplnit(content){
+      let lines = content.split('\n');
+      let size = parseInt(lines[0]);
+      lines.splice(0,1);
+      this.columns = size;
+      this.potvrdit = true;
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      this.grid = Array.from({ length: this.columns }, () =>
+          Array.from({ length: this.columns }, () => ({ value: "", placeholder: "", odpoved: false }))
+      );
+      for(let i = 0; i < this.columns; i++){
+        var line = lines[i];
+        for(let j = 0; j < this.columns; j++){
+          if(line[j] === " ") continue;
+          if(line[j] === "@"){
+            this.grid[j][i].value = line[j+1];
+            console.log(line);
+            line = line.replace(/@/g, "");
+            console.log(line);
+            this.grid[j][i].odpoved = true;
+          }
+          else{
+            this.grid[j][i].value = line[j];
+          }
+        }
+      }
+      var index = content.indexOf('#');
+      var odpoved = content.substring(index+2);
+      var odpoved = odpoved.split('\n');
+      var typOdpovedi = parseInt(odpoved[0]);
+      console.log(typOdpovedi)
+      this.zobrazNapovedu = typOdpovedi;
+      if(typOdpovedi === 3){
+        this.typNapovedy = "Písomná nápoveda";
+        var pocetTextField = parseInt(odpoved[1]);
+        odpoved.splice(0, 1);
+        this.textField = pocetTextField;
+        for(let i = 1; i < odpoved.length; i++){
+          this.textFieldValues[i] = odpoved[i];
+        }
+      }
+
     },
     exportToPDF() {
       const pdf = new jsPDF({
@@ -305,8 +397,10 @@ export default {
 .action-button {
   padding: 10px 20px;
   background-color: #007BFF;
+  margin: 1px;
   color: white;
   border: none;
+  width: fit-content;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -383,7 +477,7 @@ export default {
 .right-heading{
   color: orange;
   text-align: center;
-  margin-left: 60px;
+  margin-left: auto;
   margin-bottom: 20px;
 }
 
@@ -462,6 +556,12 @@ export default {
 
 .hidden{
   font-size: 0;
+}
+
+.tlacitka {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 

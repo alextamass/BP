@@ -56,17 +56,17 @@
   <body>
   <br><br>
   <div class="login" v-if="this.prihlaseny === false">
-    <h2>Login</h2>
+    <h2>Prihlásenie</h2>
     <form @submit.prevent="login">
       <div class="login-forma">
-        <label for="username">Username:</label>
+        <label for="username">Používateľské meno:</label>
         <input type="text" id="username" v-model="username" required>
       </div>
       <div class="login-forma">
-        <label for="password">Password:</label>
+        <label for="password">Heslo:</label>
         <input type="password" id="password" v-model="password" required>
       </div>
-      <button type="submit">Login</button>
+      <button type="submit">Prihlásiť</button>
       <p v-if="error" class="error-message">{{ error }}</p>
     </form>
   </div>

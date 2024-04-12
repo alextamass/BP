@@ -24,23 +24,23 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 40vh;
+  min-height: 30vh;
   margin: 0;
 }
 
 .header-content {
-  max-width: 800px;
+  max-width: 90%;
   margin: 0 auto;
 }
 
 .header-title {
-  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-width: 2px;
   -webkit-text-stroke-color: black;
   background-color: orange;
   color: chartreuse;
-  font-size: 5em;
+  font-size: 3em;
   margin: 0;
-  outline: 6px solid black;
   padding: 10px;
+  outline: 4px solid black;
 }
 </style>

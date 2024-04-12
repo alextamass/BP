@@ -7,7 +7,8 @@
   </div>
 
   <button style="float: right" class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
-      <br>
+  <button style="float: right" class="action-button" @click="ulozit()">Uložiť</button>
+  <br>
       <div id="generovanaOsemsmerovka">
         <h1 v-if="showGrid" class="right-heading">Vytvorená osemsmerovka : </h1>
         <div class="crossword-container">
@@ -178,6 +179,27 @@ export default {
     },
     printPDF() {
       window.print();
+    },
+    ulozit() {
+      let content = this.columns +  "\n";
+      for (let i = 0; i < this.columns; i++) {
+        for (let j = 0; j < this.columns; j++) {
+          content += this.grid[j][i].value || this.grid[j][i].placeholder || " ";
+        }
+        content += "\n";
+      }
+
+      const fullContent = content;
+      const blob = new Blob([fullContent], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Osemsmerovka.txt');
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
     },
     potvrd(){
       this.potvrdit = true;
