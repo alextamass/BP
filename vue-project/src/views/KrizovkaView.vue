@@ -219,6 +219,12 @@ export default {
     },
     vytlacit(){
       this.hidden = !this.hidden;
+      setTimeout(() => {
+        this.$nextTick(() => {
+          window.print();
+          this.hidden = false;
+        });
+      }, 1000);
     },
     showNapoveda(){
       this.zobrazitNapovedu = !this.zobrazitNapovedu;

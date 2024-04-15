@@ -40,15 +40,30 @@
             </select>
           </div>
           <div id="skryt" v-if="this.zobrazNapovedu === 2" style="text-align: center">
-            <label>Lekcia:</label>
-            <select v-model="lekcia">
+            <label>Téma:</label>
+            <select @change="vsetkyPolozky()" v-model="lekcia">
               <option v-for="item in lekcie" :key="item" :value="item">{{ item }}</option>
+              <option :value="-1">Zobraziť všetky položky</option>
             </select>
           </div>
           <h1 class="hladaneSlova">Hľadané slová</h1>
 
-          <div v-if="this.zobrazNapovedu === 2" style="text-align: center" class="obrazky" v-for="item in state.todos" :key="item.author">
-            <img v-if="item.author === this.lekcia" style="width: 250px" :src="item.todo" alt="">
+          <div>
+            <div v-if="zobrazNapovedu === 2" class="obrazky">
+              <div v-if="lekcia !== -1" v-for="(item, index) in polozkyDatabazy" :key="index" class="obrazky-item">
+                <img
+                    v-if="item.author === lekcia"
+                    :src="item.todo" alt=""
+                    class="obrazky-image">
+                <button id="skryt" @click="vymaz(index)">Vymaz</button>
+              </div>
+              <div v-if="lekcia===-1" v-for="(item, index) in polozkyDatabazy" :key="index" class="obrazky-item">
+                <img
+                    :src="item.todo" alt=""
+                    class="obrazky-image">
+                <button id="skryt" @click="vymaz(index)">Vymaz</button>
+              </div>
+            </div>
           </div>
 
           <div style="text-align: center" v-if="zobrazNapovedu === 3" v-for="index in this.textField">
@@ -96,6 +111,7 @@ export default {
       lekcia: 0,
       textField: 3,
       textFieldValues: [],
+      polozkyDatabazy: [],
     };
   },
   setup() {
@@ -136,6 +152,27 @@ export default {
     }
   },
   methods: {
+    vymaz(index){
+      this.polozkyDatabazy.splice(index,1);
+    },
+    vsetkyPolozky(){
+      if(this.lekcia === -1) {
+        this.polozkyDatabazy = this.state.todos.map(item => ({
+          ...item,
+          userInput: null,
+        }));
+        return this.polozkyDatabazy;
+      }
+      else{
+        this.polozkyDatabazy = this.state.todos
+            .filter(item => item.author === this.lekcia)
+            .map(item => ({
+              ...item,
+              userInput: null,
+            }));
+        return this.polozkyDatabazy;
+      }
+    },
     plus(){
       this.textField = this.textField +1;
     },
@@ -480,6 +517,29 @@ export default {
   display: inline-block;
   box-shadow: 1px 1px 1px 1px #aaaaaa;
   margin-top: 10px;
+}
+
+.obrazky {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  justify-content: center;
+  text-align: center;
+  align-items: stretch;
+}
+
+.obrazky-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.obrazky-image {
+  width: auto;
+  max-width: 250px;
+  max-height: 250px;
+  height: 150px;
 }
 
 .velkost-container {

@@ -7,6 +7,7 @@ import SpajackaView from "@/views/SpajackaView.vue";
 import EditorKrizovkyView from "@/views/EditorKrizovkyView.vue";
 import EditorOsemsmeroviekView from "@/views/EditorOsemsmeroviekView.vue";
 import adminView from "@/views/AdminView.vue";
+import editView from "@/views/EditView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +51,12 @@ const router = createRouter({
       path: '/admin',
       name: 'admin',
       component: adminView,
+    },
+    {
+      path: '/editView/:itemId',
+      name: 'editView',
+      component: editView,
+      props: true
     },
   ],
 });

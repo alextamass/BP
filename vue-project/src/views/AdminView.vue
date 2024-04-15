@@ -1,56 +1,3 @@
-<!--<template>-->
-<!--  <div>-->
-<!--    <input type="file" ref="fileInput" @change="handleFileChange">-->
-<!--    <button @click="uploadImage">Upload Image</button>-->
-<!--  </div>-->
-<!--</template>-->
-
-<!--<script>-->
-<!--import axios from 'axios';-->
-
-<!--export default {-->
-<!--  data() {-->
-<!--    return {-->
-<!--      imageFile: null-->
-<!--    };-->
-<!--  },-->
-<!--  methods: {-->
-<!--    handleFileChange(event) {-->
-<!--      this.imageFile = event.target.files[0];-->
-<!--    },-->
-<!--    async uploadImage() {-->
-<!--      try {-->
-<!--        const formData = new FormData();-->
-<!--        formData.append('image', this.imageFile);-->
-
-<!--        const response = await axios.post('/api/uploadRoutes', formData, {-->
-<!--          headers: {-->
-<!--            'Content-Type': 'multipart/form-data'-->
-<!--          }-->
-<!--        });-->
-
-<!--        console.log(response.data);-->
-<!--        // Display success message or perform other actions-->
-<!--      } catch (error) {-->
-<!--        console.error('Error uploading image:', error);-->
-<!--        // Display error message or handle error-->
-<!--      }-->
-<!--    }-->
-<!--  }-->
-<!--};-->
-<!--</script>-->
-
-
-<!--<template>-->
-<!--  <div>-->
-<!--    <div v-for="item in state.todos" :key="item.author">-->
-<!--      <img style="width: 250px" :src="item.todo" alt="">-->
-<!--      {{item.author}}-->
-<!--      {{item.todo}}-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</template>-->
-
 <template>
   <h1>Admin Rozhranie</h1>
   <body>
@@ -78,21 +25,39 @@
   </div>
 
   <div v-if="zobrazDatabazu" class="zobraz-databazu">
-    <div v-for="item in state.todos" :key="item._id" class="polozka">
-      <p class="nazov-lekcie">Lekcia: {{ item.author }}</p>
-      <img class="obrazok" :src="item.todo" alt="">
-      <button class="tlacidlo-vymazat" @click="vymaz(item._id)">Vymazať</button>
+    <label>Téma:</label>
+    <select v-model="lekcia">
+      <option v-for="item in lekcie" :key="item" :value="item">{{ item }}</option>
+      <option :value="-1">Zobraziť všetky položky</option>
+    </select>
+    <div v-if="lekcia !== -1" v-for="item in state.todos" :key="item._id" class="polozka">
+      <div v-if="item.author === this.lekcia">
+        <p class="nazov-lekcie">Téma: {{ item.author }}</p>
+        <img class="obrazok" :src="item.todo" alt="">
+        <button class="tlacidlo-vymazat" @click="vymaz(item._id)">Vymazať</button>
+        <router-link :to="{ name: 'editView', params: { itemId: item._id } }">Editovať</router-link>
+      </div>
     </div>
+
+    <div v-if="lekcia === -1" v-for="item in state.todos" :key="item._id" class="polozka">
+      <div>
+        <p class="nazov-lekcie">Téma: {{ item.author }}</p>
+        <img class="obrazok" :src="item.todo" alt="">
+        <button class="tlacidlo-vymazat" @click="vymaz(item._id)">Vymazať</button>
+        <router-link :to="{ name: 'editView', params: { itemId: item._id } }">Editovať</router-link>
+      </div>
+    </div>
+
   </div>
-  <div v-if="prihlaseny === true && this.nahrat === true">
+  <div v-if="prihlaseny === true && this.nahrat === true" class="pridaj-container">
     <div class="pridaj">
-      <p>Lekcia: </p>
+      <p>Téma: </p>
       <br>
-      <input type="number" v-model="state.newAuthor">
+      <input style="width: 20%" type="text" v-model="state.newAuthor">
     </div>
 
     <div class="pridaj">
-      <p>Link na obrazok: </p>
+      <p>Odkaz na obrázok: </p>
       <input style="width: 33%" type="text" v-model="state.newTodoItem">
     </div>
     <div class="pridaj">
@@ -115,8 +80,28 @@ export default {
       prihlaseny: false,
       username: '',
       password: '',
-      error: ''
+      error: '',
+      lekcia: null,
     };
+  },
+  computed: {
+    lekcie(){
+      let array = [];
+      for(let i = 0; i < this.state.todos.length; i ++){
+        const autor = this.state.todos[i].author;
+        let duplikat = false;
+        for (let j = 0; j < array.length; j++) {
+          if (array[j] === autor) {
+            duplikat = true;
+            break;
+          }
+        }
+        if(!duplikat){
+          array.push(autor);
+        }
+      }
+      return array;
+    },
   },
   methods: {
     login() {
@@ -227,8 +212,6 @@ h1 {
 
 .polozka {
   margin: auto;
-  border: 1px solid #ccc;
-  border-radius: 5px;
   padding: 15px;
   margin-bottom: 20px;
   width: 30%;
@@ -256,4 +239,5 @@ h1 {
 .tlacidlo-vymazat:hover {
   background-color: #c82333;
 }
+
 </style>

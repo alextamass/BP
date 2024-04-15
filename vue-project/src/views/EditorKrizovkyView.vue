@@ -45,17 +45,45 @@
         </select>
       </div>
       <div id="skryt" v-if="this.zobrazNapovedu === 2" style="text-align: center">
-        <label>Lekcia:</label>
-        <select v-model="lekcia">
+        <label>Téma:</label>
+        <select @change="vsetkyPolozky()" v-model="lekcia">
           <option v-for="item in lekcie" :key="item" :value="item">{{ item }}</option>
+          <option :value="-1">Zobraziť všetky položky</option>
         </select>
       </div>
       <h1 class="hladaneSlova">Nápoveda</h1>
 
-      <div v-if="this.zobrazNapovedu === 2" style="text-align: center" class="obrazky" v-for="(item, index) in polozky" :key="index">
-        <div style="display: flex; flex-direction: column; align-items: center;">
-          <img v-if="item.author === this.lekcia" style="width: 250px" :src="item.todo" alt="">
-          <input style="width: 13%; text-align: center" class="number-input" type="number">
+      <div>
+        <div v-if="zobrazNapovedu === 2" class="obrazky">
+          <div v-if="lekcia !== -1" v-for="(item, index) in polozkyDatabazy" :key="index" class="obrazky-item">
+            <img
+                v-if="item.author === lekcia"
+                :src="item.todo" alt=""
+                :class="{ 'hiddenInput': item.userInput === null || item.userInput === '' }"
+                class="obrazky-image">
+            <input
+                class="number-input" type="number"
+                style="width: 35%;"
+                placeholder="Zadaj číslo"
+                v-model="item.userInput"
+                :class="{ 'hiddenInput': item.userInput === null || item.userInput === '' }"
+            >
+            <button id="skryt" @click="vymaz(index)">Vymaz</button>
+          </div>
+          <div v-if="lekcia===-1" v-for="(item, index) in polozkyDatabazy" :key="index" class="obrazky-item">
+            <img
+                :src="item.todo" alt=""
+                :class="{ 'hiddenInput': item.userInput === null || item.userInput === '' }"
+                class="obrazky-image">
+            <input
+                class="number-input" type="number"
+                style="width: 35%;"
+                placeholder="Zadaj číslo"
+                v-model="item.userInput"
+                :class="{ 'hiddenInput': item.userInput === null || item.userInput === '' }"
+            >
+            <button id="skryt" @click="vymaz(index)">Vymaz</button>
+          </div>
         </div>
       </div>
 
@@ -107,6 +135,7 @@ export default {
       textField: 3,
       vyberanieOdpovedi: false,
       textFieldValues: [],
+      polozkyDatabazy: [],
     };
   },
   setup() {
@@ -150,6 +179,27 @@ export default {
     },
   },
   methods: {
+    vymaz(index){
+      this.polozkyDatabazy.splice(index,1);
+    },
+    vsetkyPolozky(){
+      if(this.lekcia === -1) {
+        this.polozkyDatabazy = this.state.todos.map(item => ({
+          ...item,
+          userInput: null,
+        }));
+        return this.polozkyDatabazy;
+      }
+      else{
+        this.polozkyDatabazy = this.state.todos
+            .filter(item => item.author === this.lekcia)
+            .map(item => ({
+              ...item,
+              userInput: null,
+            }));
+        return this.polozkyDatabazy;
+      }
+    },
     zmenNapovedu(){
       if(this.typNapovedy === "Kreslená nápoveda"){
         this.zobrazNapovedu = 1;
@@ -563,10 +613,51 @@ export default {
   margin-top: 20px;
 }
 
+.obrazky {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  justify-content: center;
+  text-align: center;
+  align-items: stretch;
+}
+
+.obrazky-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.obrazky-image {
+  width: auto;
+  max-width: 250px;
+  max-height: 250px;
+  height: 150px;
+}
+
+@media (max-width: 768px) {
+  .obrazky {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .obrazky-image {
+    width: auto;
+    max-width: 250px;
+    max-height: 250px;
+    height: 130px;
+  }
+  .number-input{
+    width: 30%;
+  }
+}
 
 @media print {
   .velkost-container,
   .action-button{
+    display: none;
+  }
+
+  .hiddenInput {
     display: none;
   }
 

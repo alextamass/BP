@@ -13,14 +13,9 @@ router.get('/', async (req, res) => {
 })
 
 
-//nova polozka
 router.post('/new', async (req,res) =>{
     const newTodo = new Todo(
         req.body
-        // {
-        //     author:"flanders",
-        //     todo:"test"
-        // }
     );
     const savedTodo = await newTodo.save();
     res.json(savedTodo);
