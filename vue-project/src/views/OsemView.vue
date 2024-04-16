@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="half left">
+    <div class="half left" id="skryt">
       <h1 class="h1">Vytvorenie Osemsmerovky</h1>
       <br>
       <div class="input">
@@ -28,9 +28,9 @@
         <button @click="toggleGrid" class="button-generate">Generovat</button>
       </div>
     </div>
-    <div class="divider"></div>
+    <div id="skryt" class="divider"></div>
     <div class="half right" v-if="showGrid">
-      <button style="float: right" class="action-button" v-if="showGrid" @click="exportToPDF">Uložiť</button>
+      <button style="float: right" class="action-button" v-if="showGrid" @click="exportToPDF">Vytlačiť</button>
       <br>
       <div id="generovanaOsemsmerovka">
         <h1 v-if="showGrid" class="right-heading">Vygenerovaná osemsmerovka : </h1>
@@ -216,24 +216,25 @@ export default {
       }
     },
     exportToPDF() {
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "pt",
-        format: [792, 800]
-      });
-
-      const content = document.getElementById("generovanaOsemsmerovka");
-
-      html2canvas(content, {
-        scale: 1
-      }).then(canvas => {
-        const imgData = canvas.toDataURL("image/jpeg", 1.0);
-        const imgWidth = 792;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
-        pdf.save("Osemsmerovka.pdf");
-      });
+      // const pdf = new jsPDF({
+      //   orientation: "landscape",
+      //   unit: "pt",
+      //   format: [792, 800]
+      // });
+      //
+      // const content = document.getElementById("generovanaOsemsmerovka");
+      //
+      // html2canvas(content, {
+      //   scale: 1
+      // }).then(canvas => {
+      //   const imgData = canvas.toDataURL("image/jpeg", 1.0);
+      //   const imgWidth = 792;
+      //   const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      //
+      //   pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
+      //   pdf.save("Osemsmerovka.pdf");
+      // });
+      window.print();
     },
     updateCell(rowIndex, colIndex) {
       console.log(`Updated cell at row ${rowIndex}, column ${colIndex} with value: ${this.grid[rowIndex][colIndex].value}`);
@@ -411,6 +412,16 @@ export default {
   display: inline-block;
   box-shadow: 1px 1px 1px 1px #aaaaaa;
   margin-top: 10px;
+}
+
+@media print {
+  .action-button{
+    display: none;
+  }
+
+  #skryt{
+    display: none;
+  }
 }
 </style>
 

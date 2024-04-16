@@ -1,17 +1,17 @@
 <template>
-  <body>
-  <h1 class="h1">Vytvorenie spájačky</h1>
-  <div class="dropdown">
+  <h1 id="skryt" class="h1">Vytvorenie spájačky</h1>
+  <div id="skryt" class="dropdown">
     <select class="dropdown-select" v-model="zvolenaKategoria">
       <option v-for="kategoria in kategorie" :key="kategoria">{{ kategoria }}</option>
     </select>
-    <p>Zvolená kategória: {{ zvolenaKategoria }}</p>
+    <p id="skryt">Zvolená kategória: {{ zvolenaKategoria }}</p>
   </div>
-  <div class="inputContainer">
+  <div id="skryt" class="inputContainer">
     <input v-if="zvolenaKategoria" v-model="zvolenaDlzka" type="number" min="0" :max="getMaxDlzka" class="dlzkaInput">
   </div>
-  <div class="buttonDiv">
+  <div id="skryt" class="buttonDiv">
     <button @click="generate()" class="generovatButton">Generovať</button>
+    <button style="margin-left: 5px;" class="generovatButton" @click="printPDF()">Vytlačiť</button>
   </div>
   <br>
   <h2 v-if="generovat" class="h1">Pospájaj slová k správnym obrázkom</h2>
@@ -25,7 +25,6 @@
       </div>
     </div>
   </div>
-  </body>
 </template>
 
 <script>
@@ -52,6 +51,9 @@ export default {
     }
   },
   methods: {
+    printPDF() {
+      window.print();
+    },
     generate(){
       this.generovat = true;
       this.zvolenaKategoriaData = [];
@@ -172,8 +174,15 @@ export default {
   margin-right: 10%;
 }
 
-body{
-  background-color: #1b1b1c;
+@media print {
+  .velkost-container,
+  .action-button{
+    display: none;
+  }
+
+  #skryt{
+    display: none;
+  }
 }
 
 

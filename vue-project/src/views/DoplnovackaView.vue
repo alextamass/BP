@@ -1,17 +1,17 @@
 <template>
-  <body>
   <div>
-    <h1 class="h1">Vytvorenie doplňovačky</h1>
-    <div class="dropdown">
+    <h1 id="skryt" class="h1">Vytvorenie doplňovačky</h1>
+    <div id="skryt" class="dropdown">
       <select class="dropdown-select" v-model="zvolenaKategoria">
         <option v-for="kategoria in kategorie" :key="kategoria">{{ kategoria }}</option>
       </select>
-      <p>Zvolená kategória: {{ zvolenaKategoria }}</p>
+      <p id="skryt">Zvolená kategória: {{ zvolenaKategoria }}</p>
     </div>
-    <div class="buttonDiv">
+    <div id="skryt" class="buttonDiv">
       <button @click="generate()" class="generovatButton">Generovať</button>
+      <button style="margin-left: 5px;" class="generovatButton" @click="printPDF()">Vytlačiť</button>
     </div>
-    <button style="float: right; margin-right: 3.5%" class="generovatButton" onclick="window.print()">Vytlačiť</button>
+    <h1 style="text-align: center; color: orangered">Doplň správne písmená</h1>
     <div id="osemsmerovka" v-if="generovat" class="tlac">
       <div v-for="item in zvolenaKategoriaData" :key="item.slovo">
         <div class="riadok">
@@ -25,7 +25,6 @@
       </div>
     </div>
   </div>
-  </body>
 </template>
 
 
@@ -44,6 +43,9 @@ export default {
     };
   },
   methods: {
+    printPDF() {
+      window.print();
+    },
     generate() {
       this.generovat = true;
       this.zvolenaKategoriaData = [];
@@ -156,8 +158,17 @@ export default {
   margin-right: 10%;
 }
 
-body{
-  background-color: #1b1b1c;
+@media print {
+  .velkost-container,
+  .action-button{
+    display: none;
+  }
+
+  #skryt{
+    display: none;
+  }
+
 }
+
 
 </style>
