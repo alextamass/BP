@@ -1,14 +1,15 @@
 <template>
-  <body>
-  <h1>Vytvorenie krížovky</h1>
-  <button @click="showNapoveda" class="action-button" style="margin-left: 10px">{{this.napovedaText}}</button>
+  <h1 id="skryt">Vytvorenie krížovky</h1>
+  <button id="skryt" @click="showNapoveda" class="action-button" style="margin-left: 10px">{{this.napovedaText}}</button>
   <div class="input">
     <input
+        id="skryt"
         @keyup.enter="addWord"
         type="text" v-model="enteredWord"
         class="text-field"
         placeholder="Zadaj slovo, ktoré chceš pridať" />
     <input
+        id="skryt"
         @keyup.enter="addWord"
         type="text" v-model="napoveda"
         class="text-field"
@@ -18,27 +19,27 @@
         style="margin-top: 10px;"
         @click="addWord"
         class="action-button">Pridať</button>
-    <div class="container">
+    <div id="skryt" class="container">
       <div class="slova-container">
         <div v-for="(word, index) in enteredWords" :key="index" class="riadok">
           <div class="entered-word">Slovo: {{ word }}</div>
           <div class="napoveda">Napoveda: {{ napovedy[index] }}</div>
-          <button class="delete-button" @click="vymaz(index)">
+          <button id="skryt" class="delete-button" @click="vymaz(index)">
             <img style="width: 25px" src="https://cdn-icons-png.flaticon.com/512/3687/3687412.png" alt="" />
           </button>
-          <button class="delete-button" style="margin-left: 7px" @click="setVysledokKrizovky(index)">
+          <button id="skryt" class="delete-button" style="margin-left: 7px" @click="setVysledokKrizovky(index)">
             <img style="width: 25px" src="https://freepngimg.com/thumb/finish_line/26665-3-finish-line-transparent-thumb.png" alt="" />
           </button>
         </div>
       </div>
     </div>
-    <p v-if="this.vysledokKrizovky !== ''">Hladane slovo : {{this.getVysledokKrizovky}}</p>
+    <p id="skryt" v-if="this.vysledokKrizovky !== ''">Hľadané slovo : {{this.getVysledokKrizovky}}</p>
     <div>
-      <button @click="checkWords()" class="button-generate">Generovat</button>
-      <button @click="vytlacit()" class="button-generate">Vytlacit</button>
+      <button id="skryt" @click="checkWords()" class="button-generate">Generovať</button>
+      <button id="skryt" @click="vytlacit()" class="button-generate">Vytlačiť</button>
     </div>
   </div>
-  <div class="how-to" v-if="zobrazitNapovedu">
+  <div id="skryt" class="how-to" v-if="zobrazitNapovedu">
   <p>
     Zadaj aspoň dve slová s nápovedou, ktoré majú aspoň jeden spoločný znak. <br>
     Kliknutím na tlačítko
@@ -68,10 +69,10 @@
      </div>
     </div>
   </div>
-  <div style="text-align: center" v-for="(napoveda, index) in ocislovaneNapovedy" :key="index">
+  <div style="text-align: center; font-size: 32px; @media print {color: black;}"
+       v-for="(napoveda, index) in ocislovaneNapovedy" :key="index">
     <p>{{napoveda.plac}}.  {{napoveda.napoveda}}</p>
   </div>
-  </body>
 </template>
 
 <script>
@@ -408,9 +409,6 @@ h1{
   font-size: 0;
 }
 
-body{
-  background-color: #1b1b1c;
-}
 
 .how-to{
   margin: 5px;
@@ -421,5 +419,16 @@ body{
   margin-right: auto;
   border-radius: 5px;
   color: black;
+}
+
+@media print {
+  .velkost-container,
+  .action-button{
+    display: none;
+  }
+
+  #skryt{
+    display: none;
+  }
 }
 </style>
