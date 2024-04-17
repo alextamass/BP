@@ -274,6 +274,13 @@ export default {
           content += this.textFieldValues[i] + '\n';
         }
       }
+      if(this.zobrazNapovedu === 2){
+        content += this.lekcia + '\n';
+        for(let i = 0; i < this.polozkyDatabazy.length; i++){
+          var polozka = this.polozkyDatabazy[i];
+          content += polozka._id+"#"+polozka.userInput+"\n";
+        }
+      }
 
       const fullContent = content;
       const blob = new Blob([fullContent], { type: 'text/plain' });
@@ -316,7 +323,7 @@ export default {
           if(line[j] === "@"){
             this.grid[j][i].value = line[j+1];
             console.log(line);
-            line = line.replace(/@/g, "");
+            line = line.substring(0, j) + line.substring(j + 1);
             console.log(line);
             this.grid[j][i].odpoved = true;
           }
@@ -340,7 +347,35 @@ export default {
           this.textFieldValues[i] = odpoved[i];
         }
       }
-
+      if(typOdpovedi === 2){
+        if(odpoved[1] === "-1"){
+          this.lekcia = parseInt(odpoved[1]);
+        }
+        else {
+          this.lekcia = odpoved[1];
+        }
+        this.typNapovedy = "Obrázková nápoveda";
+        this.vsetkyPolozky();
+        var array = [];
+        for(let i = 0; i < this.polozkyDatabazy.length; i++){
+          var polozka = this.polozkyDatabazy[i];
+          let found = false;
+          for(let j = 2; j < odpoved.length; j++){
+            var item = odpoved[j].split("#");
+            if(polozka._id === item[0]) {
+              found = true;
+              this.polozkyDatabazy[i].userInput = parseInt(item[1]);
+            }
+          }
+          if(found){
+            array.push(this.polozkyDatabazy[i]);
+          }
+        }
+        this.polozkyDatabazy = array;
+      }
+      if(typOdpovedi === 1){
+        this.typNapovedy = "Kreslená nápoveda";
+      }
     },
     exportToPDF() {
       const pdf = new jsPDF({

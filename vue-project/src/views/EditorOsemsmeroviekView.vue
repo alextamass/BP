@@ -237,6 +237,14 @@ export default {
         }
       }
 
+      if(this.zobrazNapovedu === 2){
+        content += this.lekcia + '\n';
+        for(let i = 0; i < this.polozkyDatabazy.length; i++){
+          var polozka = this.polozkyDatabazy[i];
+          content += polozka._id+'\n';
+        }
+      }
+
       const fullContent = content;
       const blob = new Blob([fullContent], { type: 'text/plain' });
       const url = window.URL.createObjectURL(blob);
@@ -301,6 +309,35 @@ export default {
         for(let i = 1; i < odpoved.length; i++){
           this.textFieldValues[i] = odpoved[i];
         }
+      }
+      if(typOdpovedi === 2){
+        if(odpoved[1] === "-1"){
+          this.lekcia = parseInt(odpoved[1]);
+        }
+        else {
+          this.lekcia = odpoved[1];
+        }
+        this.typNapovedy = "Obrázková nápoveda";
+        this.vsetkyPolozky();
+        var array = [];
+        for(let i = 0; i < this.polozkyDatabazy.length; i++){
+          var polozka = this.polozkyDatabazy[i];
+          let found = false;
+          for(let j = 2; j < odpoved.length; j++){
+            var item = odpoved[j];
+            console.log(item);
+            if(polozka._id === item) {
+              found = true;
+            }
+          }
+          if(found){
+            array.push(this.polozkyDatabazy[i]);
+          }
+        }
+        this.polozkyDatabazy = array;
+      }
+      if(typOdpovedi === 1){
+        this.typNapovedy = "Kreslená nápoveda";
       }
 
     },
