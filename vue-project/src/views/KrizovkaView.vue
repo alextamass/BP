@@ -1,4 +1,5 @@
 <template>
+  <body>
   <h1 id="skryt">Vytvorenie krížovky</h1>
   <button id="skryt" @click="showNapoveda" class="action-button" style="margin-left: 10px">{{this.napovedaText}}</button>
   <div class="input">
@@ -73,6 +74,7 @@
        v-for="(napoveda, index) in ocislovaneNapovedy" :key="index">
     <p>{{napoveda.plac}}.  {{napoveda.napoveda}}</p>
   </div>
+  </body>
 </template>
 
 <script>
@@ -247,6 +249,9 @@ export default {
 
 <style scoped>
 
+body{
+  background-color: #1b1b1c;
+}
 
 h1{
   text-align: center;
@@ -426,7 +431,9 @@ h1{
   .action-button{
     display: none;
   }
-
+  body{
+    background-color: white;
+  }
   #skryt{
     display: none;
   }

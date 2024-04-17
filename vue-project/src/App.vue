@@ -13,6 +13,7 @@ import Navigation from "@/components/Navigation.vue";
 </template>
 
 <style scoped>
+
 @media print {
   #app{
     display: none;

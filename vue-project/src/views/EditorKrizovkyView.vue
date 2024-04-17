@@ -1,112 +1,114 @@
 <template>
-  <div class="velkost-container">
-    <label for="zadanaVelkost" class="input-label">Zvol veľkost krížovky:</label>
-    <input type="number" v-model="columns" class="number-input" :disabled="potvrdit">
-    <button @click="potvrd()" style="margin:10px; text-align: center" class="action-button">Potvrdiť</button>
-  </div>
+  <body>
 
-  <div style="text-align: center">
-    <button v-if="vyberanieOdpovedi === false" @click="vybratOdpoved()" class="action-button">Vybrať odpoveď</button>
-    <button v-if="vyberanieOdpovedi" @click="vybratOdpoved()" class="action-button">Ukončiť výber</button>
-  </div>
-  <div class="tlacitka">
-    <button id="buttons"  class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
-    <button id="buttons"  class="action-button" @click="ulozit()">Uložiť</button>
-    <input  id="buttons" type="file"  class="action-button" @change="nahrat">
-  </div>
-  <br>
-  <div id="generovanaOsemsmerovka">
-    <h1 style="text-align: center" v-if="showGrid" class="right-heading">Vytvorená krížovka : </h1>
-    <div class="crossword-container">
-      <div v-if="showGrid" class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
-        <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
-          <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell">
-            <input
-                v-model="cell.value"
-                :placeholder="cell.placeholder"
-                class="crossword-input"
-                :class="{ 'naplnene': cell.value && !cell.odpoved, 'oznacit': cell.odpoved, 'hidden' : this.hidden && rowIndex !== 0 && colIndex !== 0}"
-                maxlength="1"
-                :disabled="!potvrdit"
-                @click="oznacitOdpoved(cell)"
-            />
-          </div>
-        </div>
-      </div>
+    <div class="velkost-container">
+      <label for="zadanaVelkost" class="input-label">Zvol veľkost krížovky:</label>
+      <input type="number" v-model="columns" class="number-input" :disabled="potvrdit">
+      <button @click="potvrd()" style="margin:10px; text-align: center" class="action-button">Potvrdiť</button>
     </div>
-    <section v-if="showGrid">
 
-      <div id="skryt" style="text-align: center">
-        <label>Typ napovedy: </label>
-        <select @change="zmenNapovedu()" id="typNapovedy" v-model="typNapovedy">
-          <option value="Kreslená nápoveda">Kreslená nápoveda</option>
-          <option value="Obrázková nápoveda">Obrázková nápoveda</option>
-          <option value="Písomná nápoveda">Písomná nápoveda</option>
-        </select>
-      </div>
-      <div id="skryt" v-if="this.zobrazNapovedu === 2" style="text-align: center">
-        <label>Téma:</label>
-        <select @change="vsetkyPolozky()" v-model="lekcia">
-          <option v-for="item in lekcie" :key="item" :value="item">{{ item }}</option>
-          <option :value="-1">Zobraziť všetky položky</option>
-        </select>
-      </div>
-      <h1 class="hladaneSlova">Nápoveda</h1>
-
-      <div>
-        <div v-if="zobrazNapovedu === 2" class="obrazky">
-          <div v-if="lekcia !== -1" v-for="(item, index) in polozkyDatabazy" :key="index" class="obrazky-item">
-            <img
-                v-if="item.author === lekcia"
-                :src="item.todo" alt=""
-                :class="{ 'hiddenInput': item.userInput === null || item.userInput === '' }"
-                class="obrazky-image">
-            <input
-                class="number-input" type="number"
-                style="width: 35%;"
-                placeholder="Zadaj číslo"
-                v-model="item.userInput"
-                :class="{ 'hiddenInput': item.userInput === null || item.userInput === '' }"
-            >
-            <button id="skryt" @click="vymaz(index)">Vymaz</button>
-          </div>
-          <div v-if="lekcia===-1" v-for="(item, index) in polozkyDatabazy" :key="index" class="obrazky-item">
-            <img
-                :src="item.todo" alt=""
-                :class="{ 'hiddenInput': item.userInput === null || item.userInput === '' }"
-                class="obrazky-image">
-            <input
-                class="number-input" type="number"
-                style="width: 35%;"
-                placeholder="Zadaj číslo"
-                v-model="item.userInput"
-                :class="{ 'hiddenInput': item.userInput === null || item.userInput === '' }"
-            >
-            <button id="skryt" @click="vymaz(index)">Vymaz</button>
+    <div style="text-align: center">
+      <button v-if="vyberanieOdpovedi === false" @click="vybratOdpoved()" class="action-button">Vybrať odpoveď</button>
+      <button v-if="vyberanieOdpovedi" @click="vybratOdpoved()" class="action-button">Ukončiť výber</button>
+    </div>
+    <div class="tlacitka">
+      <button id="buttons"  class="action-button" v-if="showGrid" @click="printPDF()">Vytlačiť</button>
+      <button id="buttons"  class="action-button" @click="ulozit()">Uložiť</button>
+      <input  id="buttons" type="file"  class="action-button" @change="nahrat">
+    </div>
+    <br>
+    <div id="generovanaOsemsmerovka">
+      <h1 style="text-align: center" v-if="showGrid" class="right-heading">Vytvorená krížovka : </h1>
+      <div class="crossword-container">
+        <div v-if="showGrid" class="crossword-grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
+          <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="crossword-row">
+            <div v-for="(cell, colIndex) in row" :key="colIndex" class="crossword-cell">
+              <input
+                  v-model="cell.value"
+                  :placeholder="cell.placeholder"
+                  class="crossword-input"
+                  :class="{ 'naplnene': cell.value && !cell.odpoved, 'oznacit': cell.odpoved, 'hidden' : this.hidden && rowIndex !== 0 && colIndex !== 0}"
+                  maxlength="1"
+                  :disabled="!potvrdit"
+                  @click="oznacitOdpoved(cell)"
+              />
+            </div>
           </div>
         </div>
       </div>
+      <section v-if="showGrid">
 
-
-      <div style="text-align: center" v-if="zobrazNapovedu === 3" v-for="index in this.textField">
-        <input type="text" v-model="textFieldValues[index]">
-        <div id="skryt" v-if="index === this.textField">
-          <button @click="minus()">
-            <img style="width: 25px" src="https://static.vecteezy.com/system/resources/previews/009/267/401/original/minus-sign-icon-free-png.png" alt="" />
-          </button>
-          <button @click="plus()">
-            <img style="width: 25px" src="https://static.vecteezy.com/system/resources/previews/009/266/327/original/plus-sign-icon-free-png.png" alt="" />
-          </button>
+        <div id="skryt" style="text-align: center">
+          <label>Typ napovedy: </label>
+          <select @change="zmenNapovedu()" id="typNapovedy" v-model="typNapovedy">
+            <option value="Kreslená nápoveda">Kreslená nápoveda</option>
+            <option value="Obrázková nápoveda">Obrázková nápoveda</option>
+            <option value="Písomná nápoveda">Písomná nápoveda</option>
+          </select>
         </div>
-      </div>
-      <div v-if="this.zobrazNapovedu === 1" class="kreslenie-center">
-        <div class="kreslenie">
-
+        <div id="skryt" v-if="this.zobrazNapovedu === 2" style="text-align: center">
+          <label>Téma:</label>
+          <select @change="vsetkyPolozky()" v-model="lekcia">
+            <option v-for="item in lekcie" :key="item" :value="item">{{ item }}</option>
+            <option :value="-1">Zobraziť všetky položky</option>
+          </select>
         </div>
-      </div>
-    </section>
-  </div>
+        <h1 class="hladaneSlova">Nápoveda</h1>
 
+        <div>
+          <div v-if="zobrazNapovedu === 2" class="obrazky">
+            <div v-if="lekcia !== -1" v-for="(item, index) in polozkyDatabazy" :key="index" class="obrazky-item">
+              <img
+                  v-if="item.author === lekcia"
+                  :src="item.todo" alt=""
+                  :class="{ 'hiddenInput': item.userInput === null || item.userInput === '' }"
+                  class="obrazky-image">
+              <input
+                  class="number-input" type="number"
+                  style="width: 35%;"
+                  placeholder="Zadaj číslo"
+                  v-model="item.userInput"
+                  :class="{ 'hiddenInput': item.userInput === null || item.userInput === '' }"
+              >
+              <button id="skryt" @click="vymaz(index)">Vymaz</button>
+            </div>
+            <div v-if="lekcia===-1" v-for="(item, index) in polozkyDatabazy" :key="index" class="obrazky-item">
+              <img
+                  :src="item.todo" alt=""
+                  :class="{ 'hiddenInput': item.userInput === null || item.userInput === '' }"
+                  class="obrazky-image">
+              <input
+                  class="number-input" type="number"
+                  style="width: 35%;"
+                  placeholder="Zadaj číslo"
+                  v-model="item.userInput"
+                  :class="{ 'hiddenInput': item.userInput === null || item.userInput === '' }"
+              >
+              <button id="skryt" @click="vymaz(index)">Vymaz</button>
+            </div>
+          </div>
+        </div>
+
+
+        <div style="text-align: center" v-if="zobrazNapovedu === 3" v-for="index in this.textField">
+          <input type="text" v-model="textFieldValues[index]">
+          <div id="skryt" v-if="index === this.textField">
+            <button @click="minus()">
+              <img style="width: 25px" src="https://static.vecteezy.com/system/resources/previews/009/267/401/original/minus-sign-icon-free-png.png" alt="" />
+            </button>
+            <button @click="plus()">
+              <img style="width: 25px" src="https://static.vecteezy.com/system/resources/previews/009/266/327/original/plus-sign-icon-free-png.png" alt="" />
+            </button>
+          </div>
+        </div>
+        <div v-if="this.zobrazNapovedu === 1" class="kreslenie-center">
+          <div class="kreslenie">
+
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
 
 </template>
 
@@ -638,6 +640,11 @@ export default {
   border: 1px solid black;
 }
 
+body{
+  background-color: #1b1b1c;
+}
+
+
 .hidden{
   font-size: 0;
 }
@@ -686,6 +693,9 @@ export default {
   }
 }
 
+
+
+
 @media print {
   .velkost-container,
   .action-button{
@@ -695,7 +705,9 @@ export default {
   .hiddenInput {
     display: none;
   }
-
+  body{
+    background-color: white;
+  }
   #skryt{
     display: none;
   }

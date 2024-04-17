@@ -1,4 +1,5 @@
 <template>
+  <body>
   <div class="velkost-container">
     <label for="zadanaVelkost" class="input-label">Zvoľ veľkosť osemsmerovky:</label>
     <input type="number" v-model="columns" class="number-input" :disabled="potvrdit">
@@ -84,7 +85,7 @@
           </div>
         </section>
       </div>
-
+  </body>
 
 </template>
 
@@ -572,6 +573,11 @@ export default {
   justify-content: center;
 }
 
+body{
+  background-color: #1b1b1c;
+}
+
+
 .obrazky-image {
   width: auto;
   max-width: 250px;
@@ -623,7 +629,9 @@ export default {
   .action-button{
     display: none;
   }
-
+  body{
+    background-color: white;
+  }
   #skryt{
     display: none;
   }
